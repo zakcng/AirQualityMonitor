@@ -3,7 +3,7 @@ import selectors
 import json
 import io
 import struct
-
+import pickle
 request_search = {
     "morpheus": "Follow the white rabbit. \U0001f430",
     "ring": "In the caves beneath the Misty Mountains. \U0001f48d",

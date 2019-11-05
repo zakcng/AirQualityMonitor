@@ -1,12 +1,13 @@
 import selectors
 import types
 import socket
-
+import pickle
 selector = selectors.DefaultSelector()
 
 
 def accept_connection(sock):
     connection, address = sock.accept()
+    print(address)
     print('Connection accepted in {}'.format(address))
     # We put the socket in non-blocking mode
     connection.setblocking(False)
@@ -21,8 +22,9 @@ def service_connection(key, mask):
     if mask & selectors.EVENT_READ:
         recv_data = sock.recv(BUFFER_SIZE)
         if recv_data:
-            data.outb += recv_data
-            print(data.outb)
+            print(pickle.loads(recv_data))
+            # data.outb += recv_data
+            # print(data.outb)
         else:
             print('Closing connection in {}'.format(data.addr))
             selector.unregister(sock)
@@ -30,7 +32,7 @@ def service_connection(key, mask):
 
 
 if __name__ == '__main__':
-    host = 'localhost'
+    host = '127.0.0.1'
     port = 12345
     BUFFER_SIZE = 1024
     # We create a TCP socket
