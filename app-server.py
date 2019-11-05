@@ -8,7 +8,7 @@ selector = selectors.DefaultSelector()
 def accept_connection(sock):
     connection, address = sock.accept()
     print(address)
-    print('Connection accepted in {}'.format(address))
+    print('Connection accepted: {}'.format(address))
     # We put the socket in non-blocking mode
     connection.setblocking(False)
     data = types.SimpleNamespace(addr=address, inb=b'', outb=b'')
@@ -26,7 +26,7 @@ def service_connection(key, mask):
             # data.outb += recv_data
             # print(data.outb)
         else:
-            print('Closing connection in {}'.format(data.addr))
+            print('Closing connection: {}'.format(data.addr))
             selector.unregister(sock)
             sock.close()
 

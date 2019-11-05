@@ -29,9 +29,6 @@ def send_data(host, port):
     socket_tcp.connect_ex(server_address)
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
     data = types.SimpleNamespace(uid=0,
-                                 msg_total=sum(len(m) for m in sensorData),
-                                 recv_total=0,
-                                 messages=list(sensorData),
                                  outb=b'')
     selector.register(socket_tcp, events, data=data)
     events = selector.select()
@@ -44,7 +41,7 @@ def service_connection(key, mask):
     data = key.data
 
     if mask & selectors.EVENT_WRITE:
-        if not data.outb and data.messages:
+        if not data.outb:
             data.outb = pickle.dumps("Test")
             # data.outb = "Test".encode()
         if data.outb:
