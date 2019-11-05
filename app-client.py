@@ -1,81 +1,57 @@
-import sys
+#!/usr/bin/env python3
+
 import socket
 import selectors
-import traceback
-import pickle
-import time
-import random
+import types
 
-import libclient
+selector = selectors.DefaultSelector()
+sensorData = ['28']
 
-sel = selectors.DefaultSelector()
+BUFFER_SIZE = 1024
 
 
-def create_request(action, value):
-    if action == "temp":
-        return dict(
-            type="text/json",
-            encoding="utf-8",
-            content=dict(action=action, value=value),
-        )
-    else:
-        return dict(
-            type="binary/custom-client-binary-type",
-            encoding="binary",
-            content=bytes(action + value, encoding="utf-8"),
-        )
-
-
-def start_connection(host, port, request):
-    addr = (host, port)
-    print("starting connection to", addr)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setblocking(False)
-    sock.connect_ex(addr)
+def start_connection(host, port):
+    server_address = (host, port)
+    print('Starting connection towards {}'.format(server_address))
+    socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # We connect using connect_ex () instead of connect ()
+    socket_tcp.connect_ex(server_address)
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
-    message = libclient.Message(sel, sock, addr, request)
-    sel.register(sock, events, data=message)
+    data = types.SimpleNamespace(uid=0,
+                                     msg_total=sum(len(m) for m in sensorData),
+                                     recv_total=0,
+                                     messages=list(sensorData),
+                                     outb=b'')
+    selector.register(socket_tcp, events, data=data)
+    events = selector.select()
+    for key, mask in events:
+        service_connection(key, mask)
 
 
-def get_temp():
-    # Function to return temperature reading
+def service_connection(key, mask):
+    sock = key.fileobj
+    data = key.data
+    if mask & selectors.EVENT_READ:
+        recv_data = sock.recv(BUFFER_SIZE)
+        if recv_data:
+            print('Received {} from connection {}'.format(repr(recv_data), data.uid))
+            data.recv_total += len(recv_data)
+        if not recv_data or data.recv_total == data.msg_total:
+            print('Closing connection', data.connid)
+            selector.unregister(sock)
+            sock.close()
+    if mask & selectors.EVENT_WRITE:
+        if not data.outb and data.messages:
+            data.outb = data.messages.pop(0).encode()
+        if data.outb:
+            print('Sending {} to connection {}'.format(repr(data.outb), data.uid))
+            sent = sock.send(data.outb)
+            sock.shutdown(socket.SHUT_WR)
+            data.outb = data.outb[sent:]
 
-    # Random for now
-    temp = str(random.randint(21, 32))
 
-    return temp
-
-if len(sys.argv) != 5:
-    print("usage:", sys.argv[0], "<host> <port> <action> <value>")
-    sys.exit(1)
-
-host, port = sys.argv[1], int(sys.argv[2])
-
-try:
-    while True:
-        # Add random number gen for debug
-        action = 'temp'
-        result = get_temp()
-        request = create_request(action, result)
-        start_connection(host, port, request)
-
-        events = sel.select(timeout=1)
-        for key, mask in events:
-            message = key.data
-            try:
-                message.process_events(mask)
-            except Exception:
-                print(
-                    "main: error: exception for",
-                    f"{message.addr}:\n{traceback.format_exc()}",
-                )
-                message.close()
-        # Check for a socket being monitored to continue.
-        if not sel.get_map():
-            break
-
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("caught keyboard interrupt, exiting")
-finally:
-    sel.close()
+if __name__ == '__main__':
+    host = 'localhost'
+    port = 12345
+    BUFFER_SIZE = 1024
+    start_connection(host, port)
