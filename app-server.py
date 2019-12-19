@@ -2,6 +2,7 @@ import selectors
 import types
 import socket
 import pickle
+import dbm
 selector = selectors.DefaultSelector()
 
 
@@ -22,7 +23,10 @@ def service_connection(key, mask):
     if mask & selectors.EVENT_READ:
         recv_data = sock.recv(BUFFER_SIZE)
         if recv_data:
-            print(pickle.loads(recv_data))
+            # Functional
+            node_data = pickle.loads(recv_data)
+
+            dbm.insert_quality_record(node_data)
             # data.outb += recv_data
             # print(data.outb)
         else:
@@ -32,13 +36,15 @@ def service_connection(key, mask):
 
 
 if __name__ == '__main__':
+    # Determine if database needs setup
+    dbm.db_exists()
+
     host = '127.0.0.1'
     port = 12345
     BUFFER_SIZE = 1024
-    # We create a TCP socket
-    socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # We configure the socket in non-blocking mode
-    socket_tcp.setblocking(False)
+
+    socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create TCP socket
+    socket_tcp.setblocking(False)  # Configure socket non-blocking
     socket_tcp.bind((host, port))
     socket_tcp.listen()
     print('Opened socket for listening connections on {} {}'.format(host, port))

@@ -1,24 +1,40 @@
-#!/usr/bin/env python3
-
 import socket
 import selectors
 import types
 import time
 import random
 import pickle
+import datetime
+
 
 selector = selectors.DefaultSelector()
 
 
 def get_temp():
-    temp = str(random.randint(19, 32))
+    temp = (random.randint(19, 32))
     return temp
 
 
-def get_sensor_readings():
-    readings_list = [get_temp()]
+def get_humidity():
+    return 32.2
 
-    return readings_list
+
+def get_barometric_pressure():
+    return 32.2
+
+
+def get_pm_25():
+    return 9
+
+
+def get_pm_10():
+    return 10
+
+
+def get_node_data():
+    data = [0, get_temp(), get_humidity(), get_barometric_pressure(), get_pm_25(), get_pm_10()]
+
+    return data
 
 
 def send_data(host, port):
@@ -42,7 +58,7 @@ def service_connection(key, mask):
 
     if mask & selectors.EVENT_WRITE:
         if not data.outb:
-            data.outb = pickle.dumps("Test")
+            data.outb = pickle.dumps(node_data)
             # data.outb = "Test".encode()
         if data.outb:
             print('Sending {} to {}'.format(repr(data.outb), host))
@@ -63,8 +79,7 @@ if __name__ == '__main__':
     TICK_RATE = 1
     UID = 0  # Will be MAC address
 
-    # sensorData = ['28']
-    sensorData = get_sensor_readings()
+    node_data = get_node_data()
 
     send_data(host, port)
     time.sleep(TICK_RATE)
