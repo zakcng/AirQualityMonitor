@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="col-md-8">
+<div class="content-section">
+    <h3>Monitoring Nodes</h3>
+    <p class='text-muted'>View the latest air quality information here. </p>
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-light">Latest Data</li>
+    </ul>
+        <div class="panel-body">
+             <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Node ID</th>
+                    <th scope="col">Date/Time</th>
+                    <th scope="col">Temperature</th>
+                    <th scope="col">Humidity</th>
+                    <th scope="col">Barometric Pressure</th>
+                    <th scope="col">PM2.5</th>
+                    <th scope="col">PM10</th>
+                </tr>
+                </thead>
+                {% for row in rows %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[6] }}</td>
+                    <td>{{ row[7] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+             </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

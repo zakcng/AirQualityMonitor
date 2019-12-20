@@ -6,9 +6,10 @@ Database management module
 import os
 import sqlite3
 import datetime
+import config
 
 # Default path for db file
-db_path = os.path.join(os.path.dirname(__file__), 'database.sqlite3')
+db_path = config.db_path
 
 # Create globals
 db_con = None
@@ -21,7 +22,7 @@ def db_exists():
 
     # Determine if database needs creating
     if os.path.exists(db_path):
-        db_con = sqlite3.connect(db_path)
+        db_con = sqlite3.connect(db_path, check_same_thread=False)
         cursor = db_con.cursor()
         return True
     else:
@@ -60,6 +61,13 @@ def insert_quality_record(node_data):
                    (node_data[0], dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
 
     db_con.commit()
+
+
+def db_execute(sql_query):
+    cursor.execute(sql_query)
+    db_con.commit()
+
+    return cursor.fetchall()
 
 
 if __name__ == '__main__':
