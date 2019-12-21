@@ -2,6 +2,7 @@ import selectors
 import types
 import socket
 import pickle
+
 import dbm
 selector = selectors.DefaultSelector()
 
@@ -25,7 +26,9 @@ def service_connection(key, mask):
         if recv_data:
             # Functional
             node_data = pickle.loads(recv_data)
-
+            client_token = node_data[0]
+            # Work out id from dbm
+            node_data[0]
             dbm.insert_quality_record(node_data)
             # data.outb += recv_data
             # print(data.outb)

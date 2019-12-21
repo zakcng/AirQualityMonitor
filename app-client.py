@@ -4,35 +4,53 @@ import types
 import time
 import random
 import pickle
+import argparse
 import datetime
 
+emulate = None
 
 selector = selectors.DefaultSelector()
 
 
 def get_temp():
-    temp = (random.randint(19, 32))
-    return temp
+    if emulate:
+        temp = (random.randint(19, 32))
+        return temp
+    else:
+        return None
 
 
 def get_humidity():
-    return 32.2
+    if emulate:
+        return 32.2
+    else:
+        return None
 
 
 def get_barometric_pressure():
-    return 32.2
+    if emulate:
+        return 32.2
+    else:
+        return None
 
 
 def get_pm_25():
-    return 9
+    if emulate:
+        return 9
+    else:
+        return None
 
 
 def get_pm_10():
-    return 10
+    if emulate:
+        return 11.1
+    else:
+        return None
 
 
-def get_node_data():
-    data = [0, get_temp(), get_humidity(), get_barometric_pressure(), get_pm_25(), get_pm_10()]
+def package_data(token):
+
+    data = [token, get_temp(), get_humidity(), get_barometric_pressure(), get_pm_25(), get_pm_10()]
 
     return data
 
@@ -72,6 +90,10 @@ def service_connection(key, mask):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Monitoring Client')
+    parser.add_argument('-t', '--token', help='Unique connection token', required=True)
+    args = vars(parser.parse_args())
+    print(args)
     # Arguments
     host = '127.0.0.1'
     port = 12345
@@ -79,7 +101,10 @@ if __name__ == '__main__':
     TICK_RATE = 1
     UID = 0  # Will be MAC address
 
-    node_data = get_node_data()
+    # Token UUID parameter
+    node_data = package_data(args['token'])
 
     send_data(host, port)
     time.sleep(TICK_RATE)
+
+# Argarse emulate -e to emulate if no sensors are present

@@ -6,10 +6,10 @@ Database management module
 import os
 import sqlite3
 import datetime
-import config
+import server_config
 
 # Default path for db file
-db_path = config.db_path
+db_path = server_config.db_path
 
 # Create globals
 db_con = None
@@ -46,9 +46,18 @@ def db_setup():
         pm_10 REAL NOT NULL
     );
     '''
+    nodes_sql = '''
+    CREATE TABLE nodes ( 
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        location TEXT NOT NULL,
+        token TEXT NOT NULL UNIQUE
+    );
+    '''
 
     # Execute SQL
     cursor.execute(quality_records_sql)
+    cursor.execute(nodes_sql)
 
     # Commit changes
     db_con.commit()
@@ -56,9 +65,20 @@ def db_setup():
 
 def insert_quality_record(node_data):
     dt = datetime.datetime.now().isoformat()
+
+    # Calculate node id from token
+    token = node_data[0]
+
     cursor.execute('''INSERT INTO quality_records(id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
                       VALUES(null,?,?,?,?,?,?,?)''',
                    (node_data[0], dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
+
+    db_con.commit()
+
+
+def insert_node(nodeName, nodeLocation, nodeToken):
+    cursor.execute('''INSERT INTO nodes(id, name, location, token) VALUES(null,?,?,?)''',
+                   (str(nodeName), str(nodeLocation), str(nodeToken)))
 
     db_con.commit()
 
