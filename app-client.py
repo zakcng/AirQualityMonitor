@@ -94,6 +94,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--token', help='Unique connection token', required=True)
     args = vars(parser.parse_args())
     print(args)
+
     # Arguments
     host = '127.0.0.1'
     port = 12345
@@ -101,7 +102,7 @@ if __name__ == '__main__':
     TICK_RATE = 1
     UID = 0  # Will be MAC address
 
-    # Token UUID parameter
+    emulate = True
     node_data = package_data(args['token'])
 
     send_data(host, port)

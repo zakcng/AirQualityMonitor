@@ -43,12 +43,14 @@ def db_setup():
         humidity REAL NOT NULL,
         barometric_pressure REAL NOT NULL,
         pm_25 REAL NOT NULL, 
-        pm_10 REAL NOT NULL
+        pm_10 REAL NOT NULL,
+        FOREIGN KEY (node_id)
+            REFERENCES nodes (node_id)
     );
     '''
     nodes_sql = '''
     CREATE TABLE nodes ( 
-        id INTEGER PRIMARY KEY,
+        node_id INTEGER PRIMARY KEY,
         name TEXT NOT NULL UNIQUE,
         location TEXT NOT NULL,
         token TEXT NOT NULL UNIQUE
@@ -67,17 +69,19 @@ def insert_quality_record(node_data):
     dt = datetime.datetime.now().isoformat()
 
     # Calculate node id from token
-    token = node_data[0]
+    token = str(node_data[0])
+    find_node_sql = cursor.execute("SELECT * FROM nodes WHERE token=?", (token,)).fetchone()
+    node_id = find_node_sql[0]
 
     cursor.execute('''INSERT INTO quality_records(id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
                       VALUES(null,?,?,?,?,?,?,?)''',
-                   (node_data[0], dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
+                   (node_id, dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
 
     db_con.commit()
 
 
 def insert_node(nodeName, nodeLocation, nodeToken):
-    cursor.execute('''INSERT INTO nodes(id, name, location, token) VALUES(null,?,?,?)''',
+    cursor.execute('''INSERT INTO nodes(node_id, name, location, token) VALUES(null,?,?,?)''',
                    (str(nodeName), str(nodeLocation), str(nodeToken)))
 
     db_con.commit()
