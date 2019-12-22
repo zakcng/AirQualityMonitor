@@ -17,9 +17,9 @@ def index():
     return render_template('index.html', rows=rows)
 
 
-@app.route('/about')
+@app.route("/about")
 def about():
-    return "About"
+    return render_template('about.html', title='About')
 
 
 @app.route('/register-node', methods=['GET', 'POST'])
@@ -45,5 +45,6 @@ def generate_node_token():
     return uuid.uuid4()
 
 
-dbm.db_exists()
-app.run('127.0.0.1', port=8000, debug=True)
+if __name__ == '__main__':
+    dbm.db_exists()
+    app.run(debug=True)
