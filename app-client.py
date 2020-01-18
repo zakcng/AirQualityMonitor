@@ -5,9 +5,7 @@ import time
 import random
 import pickle
 import argparse
-import datetime
 
-emulate = None
 
 selector = selectors.DefaultSelector()
 
@@ -17,41 +15,43 @@ def get_temp():
         temp = (random.randint(19, 32))
         return temp
     else:
-        return None
+        temp = round(sense.get_temperature(),2)
+        return temp
 
 
 def get_humidity():
     if emulate:
         return 32.2
     else:
-        return None
+        humidity = round(sense.get_humidity(),2)
+        return humidity
 
 
 def get_barometric_pressure():
     if emulate:
         return 32.2
     else:
-        return None
+        pressure = round(sense.get_pressure(),2)
+        return pressure
 
 
 def get_pm_25():
     if emulate:
         return 9
     else:
-        return None
+        return 9
 
 
 def get_pm_10():
     if emulate:
         return 11.1
     else:
-        return None
+        return 9
 
 
 def package_data(token):
 
     data = [token, get_temp(), get_humidity(), get_barometric_pressure(), get_pm_25(), get_pm_10()]
-
     return data
 
 
@@ -92,20 +92,32 @@ def service_connection(key, mask):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Monitoring Client')
     parser.add_argument('-t', '--token', help='Unique connection token', required=True)
-    args = vars(parser.parse_args())
-    print(args)
+    parser.add_argument('-e', '--emulate', help='Emulate sensors',
+                        action='store_true')
+    args = parser.parse_args()
+
+    if args.token is not None:
+        token = args.token
+    if args.emulate is not None:
+        emulate = args.emulate
+
+    print("Token: " + token)
+    print("Emulate: " + str(emulate))
 
     # Arguments
-    host = '127.0.0.1'
+    host = '192.168.1.8'
     port = 12345
     BUFFER_SIZE = 1024
-    TICK_RATE = 1
+    TICK_RATE = 60
     UID = 0  # Will be MAC address
 
-    emulate = True
-    node_data = package_data(args['token'])
+    if not emulate:
+        from sense_hat import SenseHat
+        sense = SenseHat()
 
-    send_data(host, port)
-    time.sleep(TICK_RATE)
+    start_time = time.time()
+    while True:
+        node_data = package_data(token)
 
-# Argarse emulate -e to emulate if no sensors are present
+        send_data(host, port)
+        time.sleep(TICK_RATE - ((time.time() - start_time) % TICK_RATE))

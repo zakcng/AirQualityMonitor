@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # Determine if database needs setup
     dbm.db_exists()
 
-    host = '127.0.0.1'
+    host = '192.168.1.8'
     port = 12345
     BUFFER_SIZE = 1024
 
