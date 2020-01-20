@@ -1,5 +1,5 @@
-from flask import Flask, render_template, flash, request
-from forms import RegisterNode
+from flask import Flask, render_template, flash, request, redirect, url_for
+from forms import RegistrationForm, RegisterNode
 import uuid
 import dbm
 import server_config
@@ -20,6 +20,18 @@ def index():
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            flash(f'Account created for {form.username.data}!', 'success')
+            # Add to database
+            
+            return redirect(url_for('index'))
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route('/register-node', methods=['GET', 'POST'])
