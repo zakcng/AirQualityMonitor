@@ -1,4 +1,5 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
+from flask_bcrypt import Bcrypt
 from forms import RegistrationForm, RegisterNode
 import uuid
 import dbm
@@ -7,7 +8,7 @@ import server_config
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
-
+bcrypt = Bcrypt(app)
 
 @app.route('/')
 @app.route('/home')
@@ -27,9 +28,11 @@ def register():
     form = RegistrationForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            flash(f'Account created for {form.username.data}!', 'success')
-            # Add to database
-            
+            hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            dbm.insert_user(form.username.data, hashed_pass, form.email.data)
+
+            flash(f'Welcome {form.username.data}, your account has been registered successfully!', 'success')
+
             return redirect(url_for('index'))
     return render_template('register.html', title='Register', form=form)
 

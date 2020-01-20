@@ -57,9 +57,20 @@ def db_setup():
     );
     '''
 
-    # Execute SQL
+    accounts_sql = '''
+    CREATE TABLE accounts (
+        account_id INTEGER PRIMARY KEY,
+        user_type TEXT NOT NULL,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE
+    );
+    '''
+
+    # Build tables
     cursor.execute(quality_records_sql)
     cursor.execute(nodes_sql)
+    cursor.execute(accounts_sql)
 
     # Commit changes
     db_con.commit()
@@ -83,6 +94,15 @@ def insert_quality_record(node_data):
 def insert_node(nodeName, nodeLocation, nodeToken):
     cursor.execute('''INSERT INTO nodes(node_id, name, location, token) VALUES(null,?,?,?)''',
                    (str(nodeName), str(nodeLocation), str(nodeToken)))
+
+    db_con.commit()
+
+
+def insert_user(username, password, email):
+    # Creates a standard permission user account
+    cursor.execute(
+        '''INSERT INTO accounts(account_id, user_type, username, password, email) VALUES(null,1,?,?,?)''',(
+        str(username), str(password), str(email)))
 
     db_con.commit()
 
