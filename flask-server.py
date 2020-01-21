@@ -1,4 +1,5 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
+from flask_login import login_user
 from flask_bcrypt import Bcrypt
 from forms import LoginForm, RegistrationForm, RegisterNode
 import uuid
@@ -9,6 +10,7 @@ app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
 bcrypt = Bcrypt(app)
+
 
 @app.route('/')
 @app.route('/home')
@@ -28,7 +30,15 @@ def login():
     form = LoginForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            return redirect(url_for('index'))
+            user = dbm.return_user(form.username.data)
+
+            if user and bcrypt.check_password_hash(user['password'], form.password.data):
+                login_user(user, remember=True)
+                return redirect(url_for('index'))
+            else:
+                flash(f'• Login attempt unsuccessful. Please check credentials and try again!', 'danger')
+        else:
+            flash(f'• Login attempt unsuccessful. Please check credentials and try again!', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 
@@ -40,9 +50,9 @@ def register():
             hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
             dbm.insert_user(form.username.data, hashed_pass, form.email.data)
 
-            flash(f'Welcome {form.username.data}, your account has been registered successfully!', 'success')
+            flash(f'• Welcome {form.username.data}, your account has been registered successfully!', 'success')
 
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
 

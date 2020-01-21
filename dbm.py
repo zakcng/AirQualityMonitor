@@ -1,6 +1,6 @@
 '''
 Database management module
-
+https://docs.python.org/3/library/sqlite3.html#row-objects
 '''
 
 import os
@@ -23,6 +23,7 @@ def db_exists():
     # Determine if database needs creating
     if os.path.exists(db_path):
         db_con = sqlite3.connect(db_path, check_same_thread=False)
+        db_con.set_trace_callback(print)
         cursor = db_con.cursor()
         return True
     else:
@@ -101,10 +102,23 @@ def insert_node(nodeName, nodeLocation, nodeToken):
 def insert_user(username, password, email):
     # Creates a standard permission user account
     cursor.execute(
-        '''INSERT INTO accounts(account_id, user_type, username, password, email) VALUES(null,1,?,?,?)''',(
-        str(username), str(password), str(email)))
+        '''INSERT INTO accounts(account_id, user_type, username, password, email) VALUES(null,1,?,?,?)''', (
+            str(username), str(password), str(email)))
 
     db_con.commit()
+
+
+def return_user(username):
+    # Returns the user record by username
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT * FROM accounts WHERE username = ?", (username,))
+    record = cust_cursor.fetchone()
+
+    if record:
+        return record
+    else:
+        return None
 
 
 def db_execute(sql_query):
