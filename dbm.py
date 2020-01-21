@@ -6,7 +6,7 @@ https://docs.python.org/3/library/sqlite3.html#row-objects
 import os
 import sqlite3
 import datetime
-import server_config
+from AQM import server_config
 
 # Default path for db file
 db_path = server_config.db_path
@@ -61,7 +61,7 @@ def db_setup():
     accounts_sql = '''
     CREATE TABLE accounts (
         account_id INTEGER PRIMARY KEY,
-        user_type TEXT NOT NULL,
+        user_type INTEGER NOT NULL,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE
@@ -108,11 +108,24 @@ def insert_user(username, password, email):
     db_con.commit()
 
 
-def return_user(username):
+def return_user_by_username(username):
     # Returns the user record by username
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute("SELECT * FROM accounts WHERE username = ?", (username,))
+    record = cust_cursor.fetchone()
+
+    if record:
+        return record
+    else:
+        return None
+
+
+def return_user_by_id(account_id):
+    # Returns the user record by account_id
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT * FROM accounts WHERE account_id = ?", (account_id,))
     record = cust_cursor.fetchone()
 
     if record:

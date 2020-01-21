@@ -1,15 +1,24 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
-from flask_login import login_user
+from flask_login import LoginManager, login_user
 from flask_bcrypt import Bcrypt
-from forms import LoginForm, RegistrationForm, RegisterNode
+from AQM.forms import LoginForm, RegistrationForm, RegisterNode
 import uuid
 import dbm
-import server_config
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
 bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+from AQM.models import User
+
+
+@login_manager.user_loader
+def load_user(userid):
+    user_record = dbm.return_user_by_id(userid)
+    user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
+                user_record['password'], user_record['email'])
+    return user
 
 
 @app.route('/')
@@ -30,10 +39,14 @@ def login():
     form = LoginForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            user = dbm.return_user(form.username.data)
+            user_record = dbm.return_user_by_username(form.username.data)
+            print(user_record.keys())
+            if user_record and bcrypt.check_password_hash(user_record['password'], form.password.data):
 
-            if user and bcrypt.check_password_hash(user['password'], form.password.data):
-                login_user(user, remember=True)
+                user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
+                            user_record['password'], user_record['email'])
+
+                login_user(user)
                 return redirect(url_for('index'))
             else:
                 flash(f'• Login attempt unsuccessful. Please check credentials and try again!', 'danger')
