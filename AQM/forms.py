@@ -26,3 +26,6 @@ class RegisterNode(FlaskForm):
     nodeName = StringField('Node name:', validators=[DataRequired()])
     nodeLocation = StringField('Location:', validators=[DataRequired()])
     nodeAdd = SubmitField('Add Node')
+
+    nodeView = SubmitField('View Token')
+    nodeRemove = SubmitField('Remove Node')

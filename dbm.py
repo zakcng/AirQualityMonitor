@@ -1,6 +1,7 @@
 '''
 Database management module
 https://docs.python.org/3/library/sqlite3.html#row-objects
+https://stackoverflow.com/questions/2854011/get-a-list-of-field-values-from-pythons-sqlite3-not-tuples-representing-rows
 '''
 
 import os
@@ -106,6 +107,14 @@ def insert_user(username, password, email):
             str(username), str(password), str(email)))
 
     db_con.commit()
+
+
+def get_node_names():
+    db_con.row_factory = lambda cursor, row: row[0]
+    c = db_con.cursor()
+    names = c.execute("SELECT name FROM 'nodes'").fetchall()
+
+    return names
 
 
 def return_user_by_username(username):

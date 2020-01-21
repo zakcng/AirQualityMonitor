@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-5">
+            <div class="content-section">
+                <legend class="border-bottom mb-4">Node Management</legend>
+                <select class="mdb-select md-form">
+                    <option hidden>Select node:</option>
+                    {% for n in node_names %}
+                    <option value="{{ loop.index }}">{{ n }}</option>
+                    {% endfor %}
+                </select>
+                <form method="POST" action="">
+                    <fieldset class="form-group my-2">
+                        <div class="form-group">
+                            {{ form.nodeView(class="btn btn-outline-info") }}
+                        </div>
+                         <div class="form-group">
+                            {{ form.nodeRemove(class="btn btn-outline-info") }}
+                        </div>
+                    </fieldset>
+                </form>
+
+                <legend class="border-bottom mb-4 my-3">Register Node</legend>
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <div class="form-group">
+                            {{ form.nodeName.label(class="form-control-label") }}
+                            {{ form.nodeName(class="form-control form-control-lg") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.nodeLocation.label(class="form-control-label") }}
+                            {{ form.nodeLocation(class="form-control form-control-lg") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.nodeAdd(class="btn btn-outline-info") }}
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="content-section">
+                <legend class="border-bottom mb-4">User Management</legend>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -78,22 +78,47 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-@app.route('/register-node', methods=['GET', 'POST'])
-def register_node():
+# @app.route('/register-node', methods=['GET', 'POST'])
+# def register_node():
+#     form = RegisterNode()
+#     if request.method == "POST":
+#         if form.validate_on_submit():
+#             nodeName = form.nodeName.data
+#             nodeLocation = form.nodeLocation.data
+#             nodeToken = generate_node_token()
+#
+#             dbm.insert_node(nodeName, nodeLocation, nodeToken)
+#
+#             flash(f'• Node created', 'success')
+#             flash(f'• Use the following token to register the node: {nodeToken}', 'info')
+#         else:
+#             flash('• Node creation unsuccessful. Please check name and location', 'danger')
+#     return render_template('register-node.html', title='Register Node', form=form)
+
+
+@app.route('/admin-cp', methods=['GET', 'POST'])
+def admin_cp():
+    node_names = dbm.get_node_names()
     form = RegisterNode()
+
     if request.method == "POST":
-        if form.validate_on_submit():
-            nodeName = form.nodeName.data
-            nodeLocation = form.nodeLocation.data
-            nodeToken = generate_node_token()
+        if form.nodeAdd.data:
+            if form.validate_on_submit():
+                nodeName = form.nodeName.data
+                nodeLocation = form.nodeLocation.data
+                nodeToken = generate_node_token()
 
-            dbm.insert_node(nodeName, nodeLocation, nodeToken)
+                dbm.insert_node(nodeName, nodeLocation, nodeToken)
 
-            flash(f'• Node created', 'success')
-            flash(f'• Use the following token to register the node: {nodeToken}', 'info')
-        else:
-            flash('• Node creation unsuccessful. Please check name and location', 'danger')
-    return render_template('register-node.html', title='Register Node', form=form)
+                flash(f'• Node created', 'success')
+                flash(f'• Use the following token to register the node: {nodeToken}', 'info')
+            else:
+                flash('• Node creation unsuccessful. Please check name and location', 'danger')
+        elif form.nodeView.data:
+            print("View")
+
+
+    return render_template('admin-cp.html', title='Admin Control Panel', form=form, node_names=node_names)
 
 
 def generate_node_token():
