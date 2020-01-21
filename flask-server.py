@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_bcrypt import Bcrypt
-from forms import RegistrationForm, RegisterNode
+from forms import LoginForm, RegistrationForm, RegisterNode
 import uuid
 import dbm
 import server_config
@@ -21,6 +21,15 @@ def index():
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            return redirect(url_for('index'))
+    return render_template('login.html', title='Login', form=form)
 
 
 @app.route("/register", methods=['GET', 'POST'])
