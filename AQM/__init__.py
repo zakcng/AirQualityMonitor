@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user, logout_user
 from flask_bcrypt import Bcrypt
 from AQM.forms import LoginForm, RegistrationForm, RegisterNode
 import uuid
@@ -37,12 +37,13 @@ def about():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     if request.method == "POST":
         if form.validate_on_submit():
             user_record = dbm.return_user_by_username(form.username.data)
             print(user_record.keys())
             if user_record and bcrypt.check_password_hash(user_record['password'], form.password.data):
-
                 user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
                             user_record['password'], user_record['email'])
 
@@ -55,9 +56,17 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     if request.method == "POST":
         if form.validate_on_submit():
             hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
