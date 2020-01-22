@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
-from flask_login import LoginManager, login_user, current_user, logout_user
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from AQM.forms import LoginForm, RegistrationForm, RegisterNode
 import uuid
@@ -112,14 +112,25 @@ def admin_cp():
 
                 flash(f'• Node created', 'success')
                 flash(f'• Use the following token to register the node: {nodeToken}', 'info')
+
+                return redirect(url_for('admin_cp'))
             else:
                 flash('• Node creation unsuccessful. Please check name and location', 'danger')
         elif form.nodeView.data:
             print("View")
-
+        elif form.nodeRemove.data:
+            print("Remove")
 
     return render_template('admin-cp.html', title='Admin Control Panel', form=form, node_names=node_names)
 
+
+@app.route("/node-delete/<node_name>", methods=['POST'])
+# @login_required
+def remove_node(node_name):
+    print(request.form['node_name'])
+
+    flash('Node has been deleted!', 'success')
+    return redirect(url_for('admin_cp'))
 
 def generate_node_token():
     # Produces unique id according to RFC 4122

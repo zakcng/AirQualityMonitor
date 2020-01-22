@@ -5,19 +5,23 @@
         <div class="col-5">
             <div class="content-section">
                 <legend class="border-bottom mb-4">Node Management</legend>
-                <select class="mdb-select md-form">
-                    <option hidden>Select node:</option>
-                    {% for n in node_names %}
-                    <option value="{{ loop.index }}">{{ n }}</option>
-                    {% endfor %}
-                </select>
                 <form method="POST" action="">
-                    <fieldset class="form-group my-2">
-                        <div class="form-group">
-                            {{ form.nodeView(class="btn btn-outline-info") }}
-                        </div>
-                         <div class="form-group">
-                            {{ form.nodeRemove(class="btn btn-outline-info") }}
+                    <select name="node_name" class="mdb-select md-form">
+                        <option hidden>Select node:</option>
+                        {% for n in node_names %}
+                        <option value="{{ loop.index }}">{{ n }}</option>
+                        {% endfor %}
+                    </select>
+                    <fieldset class="form-group my-3">
+                        <div class="btn-group-vertical">
+                            <div class="form-group">
+                                {{ form.nodeView(class="btn btn-outline-info") }}
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn-dgr btn btn-outline-info" data-toggle="modal"
+                                        data-target="#removeModal">Remove Node
+                                </button>
+                            </div>
                         </div>
                     </fieldset>
                 </form>
@@ -44,6 +48,32 @@
         <div class="col-5">
             <div class="content-section">
                 <legend class="border-bottom mb-4">User Management</legend>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeModalLabel">Are you sure you want to remove this monitoring node?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Removing the node will delete all associated data, are you sure you want to continue?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-dgr btn btn-outline-info" data-dismiss="modal">Close</button>
+                <!--                Replace test with option data.-->
+                <form role="form" method="POST" action="{{ url_for('remove_node', node_name='test') }}">
+                    <input class="btn-dgr btn btn-outline-info" type="submit" value="Remove Node">
+                </form>
+
             </div>
         </div>
     </div>
