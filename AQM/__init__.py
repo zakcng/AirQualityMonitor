@@ -85,50 +85,57 @@ def register():
 
 
 @app.route('/admin-cp', methods=['GET', 'POST'])
+@login_required
 def admin_cp():
-    node_names = dbm.get_node_names()
-    form = RegisterNode()
+    if current_user.is_authenticated and current_user.get_user_type() == 0:
+        node_names = dbm.get_node_names()
+        form = RegisterNode()
 
-    if request.method == "POST":
-        if form.nodeAdd.data:
-            if form.validate_on_submit():
-                nodeName = form.nodeName.data
-                nodeLocation = form.nodeLocation.data
-                nodeToken = generate_node_token()
+        if request.method == "POST":
+            if form.nodeAdd.data:
+                if form.validate_on_submit():
+                    nodeName = form.nodeName.data
+                    nodeLocation = form.nodeLocation.data
+                    nodeToken = generate_node_token()
 
-                dbm.insert_node(nodeName, nodeLocation, nodeToken)
+                    dbm.insert_node(nodeName, nodeLocation, nodeToken)
 
-                flash(f'• Node created', 'success')
-                flash(f'• Use the following token to register the node: {nodeToken}', 'info')
+                    flash(f'• Node created', 'success')
+                    flash(f'• Use the following token to register the node: {nodeToken}', 'info')
 
-                return redirect(url_for('admin_cp'))
-            else:
-                flash('• Node creation unsuccessful. Please check name and location', 'danger')
-        elif form.nodeView.data:
-            print("View")
-        elif form.nodeRemove.data:
-            print("Remove")
-
-    return render_template('admin-cp.html', title='Admin Control Panel', form=form, node_names=node_names)
+                    return redirect(url_for('admin_cp'))
+                else:
+                    flash('• Node creation unsuccessful. Please check name and location', 'danger')
+            elif form.nodeView.data:
+                print("View")
+            elif form.nodeRemove.data:
+                print("Remove")
+        return render_template('admin-cp.html', title='Admin Control Panel', form=form, node_names=node_names)
+    else:
+        print("Unauth")
+        return redirect(url_for('index'))
 
 
 @app.route("/node_management", methods=['GET', 'POST'])
-# @login_required
+@login_required
 def node_management():
-    if request.method == "POST":
-        if request.form.get('nodeView'):
-            # If view token selected
-            node_name = request.form.get('node_name')
+    if current_user.is_authenticated and current_user.get_user_type() == 0:
+        if request.method == "POST":
+            if request.form.get('nodeView'):
+                # If view token selected
+                node_name = request.form.get('node_name')
 
-            if node_name is not "Select node:":
-                token = dbm.get_node_token_by_name(node_name)
-                flash(f'• Node {node_name} unique connection token is: {token}', 'success')
-        else:
-            # If node remove selected and confirmed
-            dbm.remove_node_by_name(request.form.get('node_name'))
-            flash('Node has been deleted!', 'success')
+                if node_name is not "Select node:":
+                    token = dbm.get_node_token_by_name(node_name)
+                    flash(f'• Node {node_name} unique connection token is: {token}', 'success')
+            else:
+                # If node remove selected and confirmed
+                dbm.remove_node_by_name(request.form.get('node_name'))
+                flash('Node has been deleted!', 'success')
 
-    return redirect(url_for('admin_cp'))
+        return redirect(url_for('admin_cp'))
+    else:
+        return redirect(url_for('home'))
 
 
 def generate_node_token():

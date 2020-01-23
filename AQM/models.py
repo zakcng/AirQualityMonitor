@@ -23,3 +23,6 @@ class User(UserMixin):
 
     def get_id(self):
         return self.account_id
+
+    def get_user_type(self):
+        return self.user_type

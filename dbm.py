@@ -74,6 +74,12 @@ def db_setup():
     cursor.execute(nodes_sql)
     cursor.execute(accounts_sql)
 
+    # Add admin
+    # admin:admin
+    cursor.execute('''INSERT INTO accounts(account_id, user_type, username, password, email)
+                          VALUES(null,?,?,?,?)''', (
+        0, "admin", "$2b$12$yZNLO93MQ9E1bkCdkowVLe3C/0SieARNigJFZ/0d85buWJ.M5om6m", "admin@admin.com"))
+
     # Commit changes
     db_con.commit()
 
