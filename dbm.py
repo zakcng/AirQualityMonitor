@@ -109,6 +109,25 @@ def insert_user(username, password, email):
     db_con.commit()
 
 
+def get_node_token_by_name(node_name):
+    # Return the node token identified by node name
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT token FROM nodes WHERE name=?", (node_name,))
+    token = cust_cursor.fetchone()[0]
+
+    return token
+
+
+def remove_node_by_name(node_name):
+    # Removes a node identified by node name
+    cursor.execute("DELETE FROM nodes where name=?", (node_name,))
+
+    # TODO: Remove quality_records as required once implemented.
+
+    db_con.commit()
+
+
 def get_node_names():
     db_con.row_factory = lambda cursor, row: row[0]
     c = db_con.cursor()

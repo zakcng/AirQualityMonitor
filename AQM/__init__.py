@@ -78,24 +78,6 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-# @app.route('/register-node', methods=['GET', 'POST'])
-# def register_node():
-#     form = RegisterNode()
-#     if request.method == "POST":
-#         if form.validate_on_submit():
-#             nodeName = form.nodeName.data
-#             nodeLocation = form.nodeLocation.data
-#             nodeToken = generate_node_token()
-#
-#             dbm.insert_node(nodeName, nodeLocation, nodeToken)
-#
-#             flash(f'• Node created', 'success')
-#             flash(f'• Use the following token to register the node: {nodeToken}', 'info')
-#         else:
-#             flash('• Node creation unsuccessful. Please check name and location', 'danger')
-#     return render_template('register-node.html', title='Register Node', form=form)
-
-
 @app.route('/admin-cp', methods=['GET', 'POST'])
 def admin_cp():
     node_names = dbm.get_node_names()
@@ -128,17 +110,16 @@ def admin_cp():
 # @login_required
 def node_management():
     if request.method == "POST":
-        variable = request.form
         if request.form.get('nodeView'):
-            print("View")
+            # If view token selected
+            node_name = request.form.get('node_name')
 
-            # Find token in DB
+            if node_name is not "Select node:":
+                token = dbm.get_node_token_by_name(node_name)
+                flash(f'• Node {node_name} unique connection token is: {token}', 'success')
         else:
-            print("Remove")
-            print(request.form.get('node_id'))
-
-            # Remove node from DB
-            # Remove node data from DB
+            # If node remove selected and confirmed
+            dbm.remove_node_by_name(request.form.get('node_name'))
             flash('Node has been deleted!', 'success')
 
     return redirect(url_for('admin_cp'))
