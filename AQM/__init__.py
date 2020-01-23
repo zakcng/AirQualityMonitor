@@ -124,13 +124,25 @@ def admin_cp():
     return render_template('admin-cp.html', title='Admin Control Panel', form=form, node_names=node_names)
 
 
-@app.route("/node-delete/<node_name>", methods=['POST'])
+@app.route("/node_management", methods=['GET', 'POST'])
 # @login_required
-def remove_node(node_name):
-    print(request.form['node_name'])
+def node_management():
+    if request.method == "POST":
+        variable = request.form
+        if request.form.get('nodeView'):
+            print("View")
 
-    flash('Node has been deleted!', 'success')
+            # Find token in DB
+        else:
+            print("Remove")
+            print(request.form.get('node_id'))
+
+            # Remove node from DB
+            # Remove node data from DB
+            flash('Node has been deleted!', 'success')
+
     return redirect(url_for('admin_cp'))
+
 
 def generate_node_token():
     # Produces unique id according to RFC 4122

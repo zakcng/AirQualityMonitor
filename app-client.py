@@ -105,7 +105,7 @@ if __name__ == '__main__':
     print("Emulate: " + str(emulate))
 
     # Arguments
-    host = '192.168.1.8'
+    host = '169.254.58.5'
     port = 12345
     BUFFER_SIZE = 1024
     TICK_RATE = 60
