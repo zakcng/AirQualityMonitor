@@ -35,6 +35,19 @@ def nodes():
     return render_template('nodes.html')
 
 
+@app.route('/node/<int:node_id>', methods=['GET', 'POST'])
+def node(node_id):
+    node_exists = dbm.node_exists(node_id)
+
+    if node_exists:
+        node = dbm.return_node_by_id(node_id)
+        for n in node:
+            print(n)
+        return render_template('node.html', node=node)
+    else:
+        return redirect(url_for('index'))
+
+
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')

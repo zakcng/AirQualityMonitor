@@ -37,3 +37,10 @@ button.btn-dgr.btn.btn-outline-info:hover {
   background-color: #dc3545;
   border-color: #dc3545;
 }
+
+span.node-info {
+  font-size: 30px;
+  padding-right: 10px;
+  vertical-align:middle;
+
+}

@@ -115,6 +115,18 @@ def insert_user(username, password, email):
     db_con.commit()
 
 
+def node_exists(node_id):
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT * FROM nodes WHERE node_id=?", (node_id,))
+    token = cust_cursor.fetchone()
+
+    if token:
+        return True
+    else:
+        return False
+
+
 def get_node_token_by_name(node_name):
     # Return the node token identified by node name
     db_con.row_factory = sqlite3.Row
@@ -140,6 +152,19 @@ def get_node_names():
     names = c.execute("SELECT name FROM 'nodes'").fetchall()
 
     return names
+
+
+def return_node_by_id(node_id):
+    # Returns the user record by username
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT * FROM nodes WHERE node_id= ?", (node_id,))
+    record = cust_cursor.fetchone()
+
+    if record:
+        return record
+    else:
+        return None
 
 
 def return_user_by_username(username):
