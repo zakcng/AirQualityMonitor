@@ -44,3 +44,7 @@ span.node-info {
   vertical-align:middle;
 
 }
+
+.table>thead>tr>th {
+  border:0;
+}

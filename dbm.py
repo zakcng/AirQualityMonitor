@@ -193,6 +193,36 @@ def return_user_by_id(account_id):
         return None
 
 
+def return_latest_quality_record_by_node_id(node_id):
+    # Returns the most recent quality record from a node
+    # If no quality records are present returns None
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute(
+        "SELECT * FROM 'quality_records' WHERE node_id=? ORDER BY time DESC LIMIT 1",
+        (node_id,))
+    record = cust_cursor.fetchone()
+
+    if record:
+        return record
+    else:
+        return None
+
+
+def return_all_quality_records_by_node_id(node_id):
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute(
+        "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id=? ORDER BY time DESC",
+        (node_id,))
+    record = cust_cursor.fetchall()
+
+    if record:
+        return record
+    else:
+        return None
+
+
 def db_execute(sql_query):
     cursor.execute(sql_query)
     db_con.commit()

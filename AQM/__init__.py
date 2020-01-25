@@ -38,12 +38,18 @@ def nodes():
 @app.route('/node/<int:node_id>', methods=['GET', 'POST'])
 def node(node_id):
     node_exists = dbm.node_exists(node_id)
+    last_node_record = dbm.return_latest_quality_record_by_node_id(node_id)
+    rows = dbm.return_all_quality_records_by_node_id(node_id)
+
+    if not last_node_record:
+        # Created dictionary with null values
+        pass
 
     if node_exists:
         node = dbm.return_node_by_id(node_id)
         for n in node:
             print(n)
-        return render_template('node.html', node=node)
+        return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows)
     else:
         return redirect(url_for('index'))
 
