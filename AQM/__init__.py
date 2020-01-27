@@ -1,13 +1,18 @@
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, flash, request, after_this_request, redirect, url_for, send_from_directory, \
+    current_app
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from AQM.forms import LoginForm, RegistrationForm, RegisterNode
+import csv
+import time
+import os
 import uuid
 import dbm
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
+app.config['SERVE'] = os.getcwd()
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 from AQM.models import User
@@ -160,8 +165,32 @@ def node_management():
 
 @app.route("/node/<int:node_id>/download", methods=['GET', 'POST'])
 def node_download(node_id):
-    print(node_id)
-    return redirect(url_for('node', node_id=node_id))
+    node_name = dbm.get_node_name_by_id(node_id)
+    init_row = "record_no, date/time, temperature, humidity, barometric_pressure, pm2.5, pm10"
+    records = dbm.return_all_quality_records_by_node_id(node_id)
+    create_time = time.time()
+
+    path = app.config['SERVE'] + os.path.sep + str(node_name) + '-' + str(create_time)
+    filename = "%s-%s.csv" % (str(node_name), str(create_time))
+
+    with open(path, 'w') as file:
+        file.write(init_row + "\n")
+
+    with open(path, 'a', newline='') as file:
+        writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in records:
+            writer.writerow(row)
+
+    def generate():
+        with open(path) as f:
+            yield from f
+
+        os.remove(path)
+
+    r = current_app.response_class(generate(), mimetype='text/csv')
+    r.headers.set('Content-Disposition', 'attachment', filename=filename)
+
+    return r
 
 
 def generate_node_token():
