@@ -23,6 +23,12 @@
                     <p>Barometric Pressure: {{ last_node_record.barometric_pressure }}</p>
                     <p>PM2.5: {{ last_node_record.pm_25 }}</p>
                     <p>PM10: {{ last_node_record.pm_10 }}</p>
+                    <legend class="border-bottom mb-3"></legend>
+                    <div class="row pl-3 mb-2">
+                        <form action="{{ url_for('node_download', node_id=node.node_id) }}" method="POST">
+                            <input class="btn btn-secondary" type="submit" value="Download data">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

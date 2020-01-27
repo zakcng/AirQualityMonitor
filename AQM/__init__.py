@@ -158,6 +158,12 @@ def node_management():
         return redirect(url_for('home'))
 
 
+@app.route("/node/<int:node_id>/download", methods=['GET', 'POST'])
+def node_download(node_id):
+    print(node_id)
+    return redirect(url_for('node', node_id=node_id))
+
+
 def generate_node_token():
     # Produces unique id according to RFC 4122
     return uuid.uuid4()
