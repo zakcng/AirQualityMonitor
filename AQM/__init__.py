@@ -67,7 +67,6 @@ def login():
     if request.method == "POST":
         if form.validate_on_submit():
             user_record = dbm.return_user_by_username(form.username.data)
-            print(user_record.keys())
             if user_record and bcrypt.check_password_hash(user_record['password'], form.password.data):
                 user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
                             user_record['password'], user_record['email'])
