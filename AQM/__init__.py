@@ -139,17 +139,19 @@ def admin_cp():
 def node_management():
     if current_user.is_authenticated and current_user.get_user_type() == 0:
         if request.method == "POST":
-            if request.form.get('nodeView'):
-                # If view token selected
-                node_name = request.form.get('node_name')
+            node_name = request.form.get('node_name')
 
-                if node_name is not "Select node:":
+            if node_name == "Select node:":
+                flash('• Please select a node!', 'danger')
+                return redirect(url_for('admin_cp'))
+            else:
+                if request.form.get('nodeView'):
                     token = dbm.get_node_token_by_name(node_name)
                     flash(f'• Node {node_name} unique connection token is: {token}', 'success')
-            else:
-                # If node remove selected and confirmed
-                dbm.remove_node_by_name(request.form.get('node_name'))
-                flash('Node has been deleted!', 'success')
+                else:
+                    # If node remove selected and confirmed
+                    dbm.remove_node_by_name(node_name)
+                    flash(f'• Node {node_name} has been deleted', 'success')
 
         return redirect(url_for('admin_cp'))
     else:

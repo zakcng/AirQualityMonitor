@@ -132,9 +132,13 @@ def get_node_token_by_name(node_name):
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute("SELECT token FROM nodes WHERE name=?", (node_name,))
-    token = cust_cursor.fetchone()[0]
 
-    return token
+    print(cust_cursor)
+    if cust_cursor:
+        token = cust_cursor.fetchone()[0]
+        return token
+    else:
+        return None
 
 
 def remove_node_by_name(node_name):
