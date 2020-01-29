@@ -29,14 +29,14 @@ def load_user(userid):
 @app.route('/')
 @app.route('/home')
 def index():
-    rows = dbm.db_execute("SELECT * FROM 'quality_records' LIMIT 0,30")
+    rows = dbm.db_execute("SELECT * FROM 'quality_records' ORDER BY time DESC LIMIT 0,30")
+    names = dbm.get_live_node_names()
 
-    return render_template('index.html', rows=rows)
+    return render_template('index.html', rows=rows, names=names)
 
 
 @app.route('/nodes')
 def nodes():
-
     return render_template('nodes.html')
 
 

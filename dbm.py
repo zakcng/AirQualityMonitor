@@ -153,16 +153,36 @@ def get_node_names():
 
     return names
 
+
 def get_node_name_by_id(node_id):
     # Return the node name identified by node id
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute("SELECT name FROM nodes WHERE node_id=?", (node_id,))
 
-
     token = cust_cursor.fetchone()[0]
 
     return token
+
+
+def get_live_node_names():
+    # Return the node name of records_submitted within 5 minutes
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+
+    cust_cursor.execute('''
+    SELECT quality_records.time, nodes.name, nodes.node_id 
+    FROM quality_records 
+    INNER JOIN nodes on quality_records.node_id=nodes.node_id 
+    WHERE datetime(time) >=datetime('now', '-5 Minute') 
+    GROUP BY nodes.node_id
+    ORDER BY time DESC
+    LIMIT 5
+    ''')
+
+    names = cust_cursor.fetchall()
+
+    return names
 
 
 def return_node_by_id(node_id):
