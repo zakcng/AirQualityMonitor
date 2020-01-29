@@ -1,8 +1,7 @@
-from flask import Flask, render_template, flash, request, after_this_request, redirect, url_for, send_from_directory, \
-    current_app
+from flask import Flask, render_template, flash, request, redirect, url_for, current_app
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
-from AQM.forms import LoginForm, RegistrationForm, RegisterNode
+from AQM.forms import LoginForm, RegistrationForm, RegisterNode, UserManagement
 import csv
 import time
 import os
@@ -112,13 +111,16 @@ def register():
 def admin_cp():
     if current_user.is_authenticated and current_user.get_user_type() == 0:
         node_names = dbm.get_node_names()
-        form = RegisterNode()
+        usernames = dbm.get_usernames()
+
+        register_node_form = RegisterNode()
+        user_management_form = UserManagement()
 
         if request.method == "POST":
-            if form.nodeAdd.data:
-                if form.validate_on_submit():
-                    nodeName = form.nodeName.data
-                    nodeLocation = form.nodeLocation.data
+            if register_node_form.nodeAdd.data:
+                if register_node_form.validate_on_submit():
+                    nodeName = register_node_form.nodeName.data
+                    nodeLocation = register_node_form.nodeLocation.data
                     nodeToken = generate_node_token()
 
                     dbm.insert_node(nodeName, nodeLocation, nodeToken)
@@ -129,11 +131,16 @@ def admin_cp():
                     return redirect(url_for('admin_cp'))
                 else:
                     flash('• Node creation unsuccessful. Please check name and location', 'danger')
-            elif form.nodeView.data:
-                print("View")
-            elif form.nodeRemove.data:
-                print("Remove")
-        return render_template('admin-cp.html', title='Admin Control Panel', form=form, node_names=node_names)
+            elif user_management_form.userRemove.data:
+                username = request.form.get('account_name')
+                dbm.remove_user_by_name(username)
+                flash(f'• Removed user {username} successfully', 'success')
+
+                return redirect(url_for('admin_cp'))
+
+        return render_template('admin-cp.html', title='Admin Control Panel', register_node_form=register_node_form,
+                               user_management_form=user_management_form, node_names=node_names,
+                               usernames=usernames)
     else:
         print("Unauth")
         return redirect(url_for('index'))

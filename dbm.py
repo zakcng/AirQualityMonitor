@@ -146,10 +146,27 @@ def remove_node_by_name(node_name):
     db_con.commit()
 
 
+def remove_user_by_name(username):
+    # Removes a node identified by node name
+    cursor.execute("DELETE FROM accounts where username=?", (username,))
+
+    # TODO: Remove threshold alert attached to account
+
+    db_con.commit()
+
+
 def get_node_names():
     db_con.row_factory = lambda cursor, row: row[0]
     c = db_con.cursor()
     names = c.execute("SELECT name FROM 'nodes'").fetchall()
+
+    return names
+
+
+def get_usernames():
+    db_con.row_factory = lambda cursor, row: row[0]
+    c = db_con.cursor()
+    names = c.execute("SELECT username FROM 'accounts' WHERE user_type = 1").fetchall()
 
     return names
 
