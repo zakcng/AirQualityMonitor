@@ -69,10 +69,23 @@ def db_setup():
     );
     '''
 
+    alerts_sql = '''
+    CREATE TABLE alerts (
+        alert_id INTEGER PRIMARY KEY,
+        account_id INTEGER NOT NULL,
+        measurement INTEGER NOT NULL,
+        state TEXT NOT NULL,
+        value REAL NOT NULL,
+        FOREIGN KEY (account_id)
+            REFERENCES accounts (account_id)
+        );
+    '''
+
     # Build tables
     cursor.execute(quality_records_sql)
     cursor.execute(nodes_sql)
     cursor.execute(accounts_sql)
+    cursor.execute(alerts_sql)
 
     # Add admin
     # admin:admin
@@ -111,6 +124,15 @@ def insert_user(username, password, email):
     cursor.execute(
         '''INSERT INTO accounts(account_id, user_type, username, password, email) VALUES(null,1,?,?,?)''', (
             str(username), str(password), str(email)))
+
+    db_con.commit()
+
+
+def insert_alert(account_id, measurement, state, value):
+    # Creates a standard permission user account
+    cursor.execute(
+        '''INSERT INTO alerts(alert_id, account_id, measurement, state, value) VALUES(null,?,?,?,?)''', (account_id,
+        measurement, state, value))
 
     db_con.commit()
 

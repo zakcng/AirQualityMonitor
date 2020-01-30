@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request, redirect, url_for, current_app
+from flask import Flask, render_template, flash, request, redirect, url_for, current_app, session
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from AQM.forms import LoginForm, RegistrationForm, RegisterNode
@@ -19,10 +19,13 @@ from AQM.models import User
 
 @login_manager.user_loader
 def load_user(userid):
-    user_record = dbm.return_user_by_id(userid)
-    user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
-                user_record['password'], user_record['email'])
-    return user
+    try:
+        user_record = dbm.return_user_by_id(userid)
+        user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
+                    user_record['password'], user_record['email'])
+        return user
+    except AttributeError:
+        session.clear()
 
 
 @app.route('/')
@@ -45,8 +48,13 @@ def node(node_id):
     last_node_record = dbm.return_latest_quality_record_by_node_id(node_id)
     rows = dbm.return_all_quality_records_by_node_id(node_id)
 
+    if request.method == "POST":
+        if current_user.is_authenticated:
+            dbm.insert_alert(current_user.get_id(), request.form.get('measurement'), request.form.get('state'),
+                             request.form.get('value'))
+
     if not last_node_record:
-        # Created dictionary with null values
+        # TODO: Created dictionary with null values for last_node_record
         pass
 
     if node_exists:

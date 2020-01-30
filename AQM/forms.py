@@ -29,5 +29,3 @@ class RegisterNode(FlaskForm):
 
     nodeView = SubmitField('View Token')
     nodeRemove = SubmitField('Remove Node')
-
-

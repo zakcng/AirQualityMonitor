@@ -40,11 +40,47 @@
             <div class="content-section">
                 <legend class="border-bottom mb-4">Alert Management</legend>
 
+                <form action="" method="POST">
+                    <div class="form-group row">
+                        <label class="control-label col-md-2 h5">IF</label>
+                        <div class="col-md-3">
+                            <select class="form-control" name="measurement">
+                                <option value="0">Temperature</option>
+                                <option value="1">Humidity</option>
+                                <option value="2">Barometric Pressure</option>
+                                <option value="3">PM2.5</option>
+                                <option value="4">PM10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2 h5">STATE</label>
+                        <div class="col-md-3">
+                            <select class="form-control" name="state">
+                                <option value="<">Is Less Than</option>
+                                <option value="==">Is Equal To</option>
+                                <option value=">">Is Greater Than</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-2 h5">VALUE</label>
+                        <div class="col-md-3">
+                           <input type="text" class="form-control" name="value" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-outline-info">Create Alert</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     {% endif %}
-<!--    TODO: Have alert management options greyed out if not logged in.-->
+    <!--    TODO: Have alert management options greyed out if not logged in.-->
 
     <div class="row justify-content-center">
         <div class="col-12">
