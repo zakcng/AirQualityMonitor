@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, current_app
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
-from AQM.forms import LoginForm, RegistrationForm, RegisterNode, UserManagement
+from AQM.forms import LoginForm, RegistrationForm, RegisterNode
 import csv
 import time
 import os
@@ -114,7 +114,6 @@ def admin_cp():
         usernames = dbm.get_usernames()
 
         register_node_form = RegisterNode()
-        user_management_form = UserManagement()
 
         if request.method == "POST":
             if register_node_form.nodeAdd.data:
@@ -131,7 +130,7 @@ def admin_cp():
                     return redirect(url_for('admin_cp'))
                 else:
                     flash('• Node creation unsuccessful. Please check name and location', 'danger')
-            elif user_management_form.userRemove.data:
+            elif request.form.get('remove_user'):
                 username = request.form.get('account_name')
 
                 if username is not "Select user:":
@@ -143,8 +142,7 @@ def admin_cp():
                 return redirect(url_for('admin_cp'))
 
         return render_template('admin-cp.html', title='Admin Control Panel', register_node_form=register_node_form,
-                               user_management_form=user_management_form, node_names=node_names,
-                               usernames=usernames)
+                               node_names=node_names, usernames=usernames)
     else:
         return redirect(url_for('index'))
 

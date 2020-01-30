@@ -34,6 +34,7 @@
         </div>
     </div>
 
+    {% if current_user.is_authenticated %}
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="content-section">
@@ -42,6 +43,8 @@
             </div>
         </div>
     </div>
+    {% endif %}
+<!--    TODO: Have alert management options greyed out if not logged in.-->
 
     <div class="row justify-content-center">
         <div class="col-12">

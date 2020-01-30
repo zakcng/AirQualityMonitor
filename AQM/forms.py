@@ -31,5 +31,3 @@ class RegisterNode(FlaskForm):
     nodeRemove = SubmitField('Remove Node')
 
 
-class UserManagement(FlaskForm):
-    userRemove = SubmitField('Remove User')

@@ -76,7 +76,7 @@
         <div class="col-5">
             <div class="content-section">
                 <legend class="border-bottom mb-4">User Management</legend>
-                 <form method="POST" action="">
+                <form method="POST" action="">
                     <select name="account_name" class="mdb-select md-form">
                         <option hidden>Select user:</option>
                         {% for user in usernames %}
@@ -86,7 +86,8 @@
                     <fieldset class="form-group my-3">
                         <div class="btn-group-vertical">
                             <div class="form-group">
-                                {{ user_management_form.userRemove(class="btn btn-outline-info") }}
+                                <button type="submit" class="btn-dgr btn btn-outline-info"  name="remove_user" value="true">Remove User
+                                </button>
                             </div>
                         </div>
                     </fieldset>
