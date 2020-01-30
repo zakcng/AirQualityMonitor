@@ -25,6 +25,7 @@ def load_user(userid):
                     user_record['password'], user_record['email'])
         return user
     except AttributeError:
+        # Attempt to fix an issue with an deleted database and an active user session
         session.clear()
 
 

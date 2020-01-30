@@ -2,7 +2,8 @@ import selectors
 import types
 import socket
 import pickle
-
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 import dbm
 
 selector = selectors.DefaultSelector()
@@ -27,16 +28,104 @@ def service_connection(key, mask):
         if recv_data:
             # Functional
             node_data = pickle.loads(recv_data)
-            client_token = node_data[0]
-            # Work out id from dbm
-            node_data[0]
             dbm.insert_quality_record(node_data)
-            # data.outb += recv_data
-            # print(data.outb)
+            detect_alert_requirement(node_data)
         else:
             print('Closing connection: {}'.format(data.addr))
             selector.unregister(sock)
             sock.close()
+
+
+def detect_alert_requirement(node_data):
+    alerts = dbm.return_all_alerts()
+
+    if alerts:
+        for alert in alerts:
+            if alert['measurement'] == 0:  # Temperature
+                if alert['state'] == '<':
+                    if node_data[1] < alert['value']:
+                        send_alert(alert, node_data[1])
+                elif alert['state'] == '==':
+                    if node_data[1] == alert['value']:
+                        send_alert(alert, node_data[1])
+                elif alert['state'] == '>':
+                    if node_data[1] > alert['value']:
+                        send_alert(alert, node_data[1])
+            elif alert['measurement'] == 1:  # Humidity
+                if alert['state'] == '<':
+                    if node_data[2] < alert['value']:
+                        send_alert(alert, node_data[2])
+                elif alert['state'] == '==':
+                    if node_data[2] == alert['value']:
+                        send_alert(alert, node_data[2])
+                elif alert['state'] == '>':
+                    if node_data[2] > alert['value']:
+                        send_alert(alert, node_data[2])
+            elif alert['measurement'] == 2:  # Barometric Pressure
+                if alert['state'] == '<':
+                    if node_data[3] < alert['value']:
+                        send_alert(alert, node_data[3])
+                elif alert['state'] == '==':
+                    if node_data[3] == alert['value']:
+                        send_alert(alert, node_data[3])
+                elif alert['state'] == '>':
+                    if node_data[3] > alert['value']:
+                        send_alert(alert, node_data[3])
+            elif alert['measurement'] == 3:  # PM2.5
+                if alert['state'] == '<':
+                    if node_data[4] < alert['value']:
+                        send_alert(alert, node_data[4])
+                elif alert['state'] == '==':
+                    if node_data[4] == alert['value']:
+                        send_alert(alert, node_data[4])
+                elif alert['state'] == '>':
+                    if node_data[4] > alert['value']:
+                        send_alert(alert, node_data[4])
+            elif alert['measurement'] == 4:  # PM10
+                if alert['state'] == '<':
+                    if node_data[5] < alert['value']:
+                        send_alert(alert, node_data[5])
+                elif alert['state'] == '==':
+                    if node_data[5] == alert['value']:
+                        send_alert(alert, node_data[5])
+                elif alert['state'] == '>':
+                    if node_data[5] > alert['value']:
+                        send_alert(alert, node_data[5])
+
+
+def send_alert(alert, node_data):
+    user_record = dbm.get_account_email_by_account_id(alert['account_id'])
+
+    if alert['measurement'] == 0:
+        measurement = 'Temperature'
+    elif alert['measurement'] == 1:
+        measurement = 'Humidity'
+    elif alert['measurement'] == 2:
+        measurement = 'Barometric Pressure'
+    elif alert['measurement'] == 3:
+        measurement = 'PM2.5'
+    elif alert['measurement'] == 4:
+        measurement = 'PM10'
+
+    message = Mail(
+        from_email='AQMBot@airqualitymonitor.com',
+        to_emails=user_record['email'],
+        subject='Alert: Air Quality Value Exceeded',
+        html_content=f"""
+        Hi {user_record['username']}, your air quality alert has been raised! <br>
+        You set an alert regarding {measurement} {alert['state']} {alert['value']} <br>
+        The reported value from the node was {node_data} for {measurement}
+        """
+    )
+
+    with open('sendgrid.key') as f:
+        key = f.readline()
+
+    sg = SendGridAPIClient(key)
+    response = sg.send(message)
+
+    print(response.status_code)
+    print(f"Alert sent to {user_record['email']}")
 
 
 if __name__ == '__main__':

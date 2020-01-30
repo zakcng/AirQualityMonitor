@@ -132,7 +132,8 @@ def insert_alert(account_id, measurement, state, value):
     # Creates a standard permission user account
     cursor.execute(
         '''INSERT INTO alerts(alert_id, account_id, measurement, state, value) VALUES(null,?,?,?,?)''', (account_id,
-        measurement, state, value))
+                                                                                                         measurement,
+                                                                                                         state, value))
 
     db_con.commit()
 
@@ -224,6 +225,17 @@ def get_live_node_names():
     return names
 
 
+def get_account_email_by_account_id(account_id):
+    # Return the username and email using the account_id
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT username, email FROM 'accounts' WHERE account_id=?", (account_id,))
+
+    account_details = cust_cursor.fetchone()
+
+    return account_details
+
+
 def return_node_by_id(node_id):
     # Returns the user record by username
     db_con.row_factory = sqlite3.Row
@@ -291,6 +303,17 @@ def return_all_quality_records_by_node_id(node_id):
         return record
     else:
         return None
+
+
+def return_all_alerts():
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute(
+        "SELECT * FROM alerts")
+
+    record = cust_cursor.fetchall()
+
+    return record
 
 
 def db_execute(sql_query):
