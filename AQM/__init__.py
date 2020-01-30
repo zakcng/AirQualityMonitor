@@ -133,8 +133,12 @@ def admin_cp():
                     flash('• Node creation unsuccessful. Please check name and location', 'danger')
             elif user_management_form.userRemove.data:
                 username = request.form.get('account_name')
-                dbm.remove_user_by_name(username)
-                flash(f'• Removed user {username} successfully', 'success')
+
+                if username is not "Select user:":
+                    dbm.remove_user_by_name(username)
+                    flash(f'• Removed user {username} successfully', 'success')
+                else:
+                    flash(f'• Please select a user to remove', 'danger')
 
                 return redirect(url_for('admin_cp'))
 
@@ -142,7 +146,6 @@ def admin_cp():
                                user_management_form=user_management_form, node_names=node_names,
                                usernames=usernames)
     else:
-        print("Unauth")
         return redirect(url_for('index'))
 
 

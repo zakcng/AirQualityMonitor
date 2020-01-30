@@ -78,7 +78,7 @@
                 <legend class="border-bottom mb-4">User Management</legend>
                  <form method="POST" action="">
                     <select name="account_name" class="mdb-select md-form">
-                        <option hidden>Select node:</option>
+                        <option hidden>Select user:</option>
                         {% for user in usernames %}
                         <option value="{{ user }}">{{ user }}</option>
                         {% endfor %}

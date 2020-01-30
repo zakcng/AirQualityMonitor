@@ -40,38 +40,38 @@
                 <legend class="border-bottom mb-4">Alert Management</legend>
 
             </div>
+        </div>
+    </div>
 
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="content-section">
-                        <legend class="border-bottom">Records</legend>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Date/Time</th>
-                                    <th scope="col">Temperature</th>
-                                    <th scope="col">Humidity</th>
-                                    <th scope="col">Barometric Pressure</th>
-                                    <th scope="col">PM2.5</th>
-                                    <th scope="col">PM10</th>
-                                </tr>
-                                </thead>
-                                {% for row in rows %}
-                                <tr>
-                                    <td>{{ row[0] }}</td>
-                                    <td>{{ row[1]|truncate(19, end='') }}</td>
-                                    <td>{{ row[2] }}</td>
-                                    <td>{{ row[3] }}</td>
-                                    <td>{{ row[4] }}</td>
-                                    <td>{{ row[5] }}</td>
-                                    <td>{{ row[6] }}</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="content-section">
+                <legend class="border-bottom">Records</legend>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date/Time</th>
+                            <th scope="col">Temperature</th>
+                            <th scope="col">Humidity</th>
+                            <th scope="col">Barometric Pressure</th>
+                            <th scope="col">PM2.5</th>
+                            <th scope="col">PM10</th>
+                        </tr>
+                        </thead>
+                        {% for row in rows %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1]|truncate(19, end='') }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                            <td>{{ row[4] }}</td>
+                            <td>{{ row[5] }}</td>
+                            <td>{{ row[6] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
                 </div>
             </div>
         </div>
