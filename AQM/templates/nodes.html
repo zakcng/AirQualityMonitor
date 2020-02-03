@@ -5,19 +5,18 @@
     {% if nodes|length >= 1 %}
     <div class="row justify-content-center">
         <div class="content-section">
-            <div class="card-group">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ nodes[0].name }}</h5>
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional content. This content is a little bit longer.</p>
-                        {% if nodes[0].time is none %}
-                        <p class="card-text"><small class="text-muted">Last Online: Never</small></p>
-                        {% else %}
-                        <p class="card-text"><small class="text-muted">Last Online: {{ nodes[0].time|truncate(19,
-                            end='') }}</small></p>
-                        {% endif %}
-                    </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ nodes[0].name }}</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                        additional content. This content is a little bit longer.</p>
+                    {% if nodes[0].time is none %}
+                    <p class="card-text"><small class="text-muted">Last Online: Never</small></p>
+                    {% else %}
+                    <p class="card-text"><small class="text-muted">Last Online: {{ nodes[0].time|truncate(19,
+                        end='') }}</small></p>
+                    {% endif %}
+                    <a href="/node/{{ nodes[0].node_id }}" class="btn btn-primary stretched-link">Visit</a>
                 </div>
             </div>
         </div>
@@ -38,6 +37,7 @@
                         <p class="card-text"><small class="text-muted">Last Online: {{ nodes[1].time|truncate(19,
                             end='') }}</small></p>
                         {% endif %}
+                        <a href="/node/{{ nodes[1].node_id }}" class="btn btn-primary stretched-link">Visit</a>
                     </div>
                 </div>
             </div>
@@ -59,6 +59,7 @@
                         <p class="card-text"><small class="text-muted">Last Online: {{ nodes[2].time|truncate(19,
                             end='') }}</small></p>
                         {% endif %}
+                        <a href="/node/{{ nodes[2].node_id }}" class="btn btn-primary stretched-link">Visit</a>
                     </div>
                 </div>
             </div>
@@ -67,6 +68,5 @@
     {% endif %}
     {{ pagination.info }}
     {{ pagination.links }}
-</div>
 </div>
 {% endblock content %}
