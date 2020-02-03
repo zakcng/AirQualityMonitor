@@ -10,6 +10,7 @@
                 <ul class="list-group">
                     <li class="list-group-item list-group-item-light">Latest Data</li>
                 </ul>
+                {% if rows %}
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -38,6 +39,9 @@
                         {% endfor %}
                     </table>
                 </div>
+                {{ pagination.info }}
+                {{ pagination.links }}
+                {% endif %}
             </div>
         </div>
         <div class="col-4">
@@ -48,7 +52,7 @@
                     <li class="list-group-item list-group-item-light">Online Nodes</li>
                 </ul>
                 <ul class="list-group list-unstyled">
-                   {% for name in names %}
+                    {% for name in names %}
                     <li><a href="/node/{{ name.node_id }}" class="list-group-item ">{{ name.name }}</a></li>
                     {% endfor %}
                 </ul>

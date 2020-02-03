@@ -1,4 +1,5 @@
-from flask import Flask, render_template, flash, request, redirect, url_for, current_app, session
+from flask import Flask, render_template, flash, request, redirect, url_for, current_app, session, g
+from flask_paginate import Pagination, get_page_args
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from AQM.forms import LoginForm, RegistrationForm, RegisterNode
@@ -7,6 +8,7 @@ import time
 import os
 import uuid
 import dbm
+import sqlite3
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -15,6 +17,19 @@ app.config['SERVE'] = os.getcwd()
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 from AQM.models import User
+
+
+@app.before_request
+def before_request():
+    g.conn = sqlite3.connect('database.sqlite3')
+    g.conn.row_factory = sqlite3.Row
+    g.cur = g.conn.cursor()
+
+
+@app.teardown_request
+def teardown(error):
+    if hasattr(g, 'conn'):
+        g.conn.close()
 
 
 @login_manager.user_loader
@@ -32,10 +47,32 @@ def load_user(userid):
 @app.route('/')
 @app.route('/home')
 def index():
-    rows = dbm.db_execute("SELECT * FROM 'quality_records' ORDER BY time DESC LIMIT 0,30")
+    g.cur.execute('select count(*) from quality_records')
+    total = g.cur.fetchone()[0]
+
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    sql = 'select * from quality_records order by id desc limit {}, {}' \
+        .format(offset, per_page)
+    g.cur.execute(sql)
+    rows = g.cur.fetchall()
+
+    pagination = get_pagination(page=page,
+                                per_page=per_page,
+                                total=total,
+                                record_name='rows',
+                                format_total=True,
+                                format_number=True,
+                                )
+
     names = dbm.get_live_node_names()
 
-    return render_template('index.html', rows=rows, names=names)
+    return render_template('index.html', rows=rows, page=page,
+                           per_page=per_page,
+                           pagination=pagination, names=names)
 
 
 @app.route('/nodes')
@@ -53,6 +90,7 @@ def node(node_id):
         if current_user.is_authenticated:
             dbm.insert_alert(current_user.get_id(), request.form.get('measurement'), request.form.get('state'),
                              request.form.get('value'))
+            flash(f'• Successfully added alert!', 'success')
 
     if not last_node_record:
         # TODO: Created dictionary with null values for last_node_record
@@ -213,6 +251,32 @@ def node_download(node_id):
 def generate_node_token():
     # Produces unique id according to RFC 4122
     return uuid.uuid4()
+
+
+def get_css_framework():
+    return current_app.config.get('CSS_FRAMEWORK', 'bootstrap4')
+
+
+def get_link_size():
+    return current_app.config.get('LINK_SIZE', 'sm')
+
+
+def get_alignment():
+    return current_app.config.get('LINK_ALIGNMENT', '')
+
+
+def show_single_page_or_not():
+    return current_app.config.get('SHOW_SINGLE_PAGE', False)
+
+
+def get_pagination(**kwargs):
+    kwargs.setdefault('record_name', 'records')
+    return Pagination(css_framework=get_css_framework(),
+                      link_size=get_link_size(),
+                      alignment=get_alignment(),
+                      show_single_page=show_single_page_or_not(),
+                      **kwargs
+                      )
 
 
 if __name__ == '__main__':
