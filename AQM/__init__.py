@@ -77,7 +77,35 @@ def index():
 
 @app.route('/nodes')
 def nodes():
-    return render_template('nodes.html')
+    g.cur.execute('select count(*) from nodes')
+    total = g.cur.fetchone()[0]
+
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    per_page = 3
+    offset = (page - 1) * per_page
+
+    # Left join
+    sql = 'SELECT * FROM nodes LEFT JOIN quality_records on quality_records.node_id = nodes.node_id GROUP BY nodes.node_id ORDER BY time DESC limit {}, {}' \
+        .format(offset, per_page)
+    g.cur.execute(sql)
+    nodes = g.cur.fetchall()
+
+    for node in nodes:
+        print("DEBUG")
+        print(node)
+
+    pagination = get_pagination(page=page,
+                                per_page=per_page,
+                                total=total,
+                                record_name='nodes',
+                                format_total=True,
+                                format_number=True,
+                                )
+
+    return render_template('nodes.html', nodes=nodes, page=page,
+                           per_page=per_page,
+                           pagination=pagination)
 
 
 @app.route('/node/<int:node_id>', methods=['GET', 'POST'])

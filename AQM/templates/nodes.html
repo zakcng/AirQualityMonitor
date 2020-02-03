@@ -2,38 +2,71 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
+    {% if nodes|length >= 1 %}
     <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="content-section">
-                <div class="card-group">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text"><small class="text-muted">Last online: 3 mins ago</small></p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This card has supporting text below as a natural lead-in to additional
-                                content.</p>
-                            <p class="card-text"><small class="text-muted">Last online: 3 mins ago</small></p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This card has even longer content than the first to show that equal
-                                height action.</p>
-                            <p class="card-text"><small class="text-muted">Last online: 3 mins ago</small></p>
-                        </div>
+        <div class="content-section">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ nodes[0].name }}</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                        {% if nodes[0].time is none %}
+                        <p class="card-text"><small class="text-muted">Last Online: Never</small></p>
+                        {% else %}
+                        <p class="card-text"><small class="text-muted">Last Online: {{ nodes[0].time|truncate(19,
+                            end='') }}</small></p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if nodes|length >= 2 %}
+    <div class="row justify-content-center">
+        <div class="content-section">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ nodes[1].name }}</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                        {% if nodes[1].time is none %}
+                        <p class="card-text"><small class="text-muted">Last Online: Never</small></p>
+                        {% else %}
+                        <p class="card-text"><small class="text-muted">Last Online: {{ nodes[1].time|truncate(19,
+                            end='') }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if nodes|length >=3 %}
+    <div class="row justify-content-center">
+        <div class="content-section">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ nodes[2].name }}</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                        {% if nodes[2].time is none %}
+                        <p class="card-text"><small class="text-muted">Last Online: Never</small></p>
+                        {% else %}
+                        <p class="card-text"><small class="text-muted">Last Online: {{ nodes[2].time|truncate(19,
+                            end='') }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {{ pagination.info }}
+    {{ pagination.links }}
+</div>
 </div>
 {% endblock content %}

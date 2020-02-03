@@ -32,15 +32,16 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="/">Home</a>
+                    <a class="nav-item nav-link" href="/nodes">Nodes</a>
                     <a class="nav-item nav-link" href="/about">About</a>
                 </div>
                 <!-- Navbar Right Side -->
 
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
-                        {% if current_user.get_user_type() == 0 %}
-                        <a class="nav-item nav-link" href="{{ url_for('admin_cp') }}">Control Panel</a>
-                        {% endif %}
+                    {% if current_user.get_user_type() == 0 %}
+                    <a class="nav-item nav-link" href="{{ url_for('admin_cp') }}">Control Panel</a>
+                    {% endif %}
                     <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                     {% else %}
                     <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
