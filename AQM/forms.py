@@ -11,14 +11,16 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
+
     submit = SubmitField('Sign Up')
 
 
 class LoginForm(FlaskForm):
     username = StringField('Username',
-                        validators=[DataRequired(), Length(min=3, max=20)])
+                           validators=[DataRequired(), Length(min=3, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
+
     submit = SubmitField('Login')
 
 
@@ -29,3 +31,18 @@ class RegisterNode(FlaskForm):
 
     nodeView = SubmitField('View Token')
     nodeRemove = SubmitField('Remove Node')
+
+
+class EmailForm(FlaskForm):
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+
+    submit = SubmitField('Request Reset')
+
+
+class PasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+
+    submit = SubmitField('Reset Password')

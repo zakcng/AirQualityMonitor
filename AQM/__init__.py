@@ -2,7 +2,9 @@ from flask import Flask, render_template, flash, request, redirect, url_for, cur
 from flask_paginate import Pagination, get_page_args
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
-from AQM.forms import LoginForm, RegistrationForm, RegisterNode
+from AQM.forms import LoginForm, RegistrationForm, RegisterNode, EmailForm, PasswordForm
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 import csv
 import time
 import os
@@ -86,14 +88,11 @@ def nodes():
     offset = (page - 1) * per_page
 
     # Left join
-    sql = 'SELECT * FROM nodes LEFT JOIN quality_records on quality_records.node_id = nodes.node_id GROUP BY nodes.node_id ORDER BY time DESC limit {}, {}' \
+    sql = 'SELECT * FROM nodes LEFT JOIN quality_records on quality_records.node_id = nodes.node_id GROUP BY ' \
+          'nodes.node_id ORDER BY time DESC limit {}, {}' \
         .format(offset, per_page)
     g.cur.execute(sql)
     nodes = g.cur.fetchall()
-
-    for node in nodes:
-        print("DEBUG")
-        print(node)
 
     pagination = get_pagination(page=page,
                                 per_page=per_page,
@@ -163,6 +162,70 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route("/request-reset", methods=['GET', 'POST'])
+def request_reset():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    form = EmailForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            user_record = dbm.return_user_by_email(form.email.data)
+            if user_record:
+                user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
+                            user_record['password'], user_record['email'])
+
+                token = user.get_reset_token()
+
+                message = Mail(
+                    from_email='AQMBot@airqualitymonitor.com',
+                    to_emails=user_record['email'],
+                    subject='Password Reset',
+                    html_content=f"""
+                    To reset your password, use the following link:<br>
+                    {url_for('reset_password', token=token, _external=True)}<br>
+                    If you did not submit this reset request, please ignore this email. 
+                    """
+                )
+
+                with open('sendgrid.key') as f:
+                    key = f.readline()
+
+                sg = SendGridAPIClient(key)
+                response = sg.send(message)
+
+                print(response)
+
+            flash("• If an account with that email exists a reset email has been sent!", "warning")
+
+    return render_template('request-reset.html', title='Reset Password', form=form)
+
+
+@app.route("/reset-password/<token>", methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    user_id = User.verify_reset_token(token)
+
+    if user_id is None:
+        flash('• The token provided is either invalid or expired', 'warning')
+        return redirect(url_for('request_reset'))
+
+    form = PasswordForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            dbm.change_user_pass(user_id, hashed_pass)
+
+            flash('• Your password has been changed! ', 'success')
+            return redirect(url_for('login'))
+
+    return render_template('reset-password.html', title='Reset Password', form=form)
 
 
 @app.route("/register", methods=['GET', 'POST'])

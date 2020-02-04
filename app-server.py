@@ -118,7 +118,7 @@ def send_alert(alert, node_data):
         """
     )
 
-    with open('sendgrid.key') as f:
+    with open('AQM/sendgrid.key') as f:
         key = f.readline()
 
     sg = SendGridAPIClient(key)

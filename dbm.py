@@ -138,6 +138,14 @@ def insert_alert(account_id, measurement, state, value):
     db_con.commit()
 
 
+def change_user_pass(user_id, hashed_pass):
+    # Changes the users password after a valid reset
+    cursor.execute(
+        '''UPDATE accounts SET password = ? WHERE account_id = ?''', (hashed_pass, user_id))
+
+    db_con.commit()
+
+
 def node_exists(node_id):
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
@@ -267,6 +275,19 @@ def return_user_by_id(account_id):
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute("SELECT * FROM accounts WHERE account_id = ?", (account_id,))
+    record = cust_cursor.fetchone()
+
+    if record:
+        return record
+    else:
+        return None
+
+
+def return_user_by_email(email):
+    # Returns the user record by email
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT * FROM accounts WHERE email = ?", (email,))
     record = cust_cursor.fetchone()
 
     if record:
