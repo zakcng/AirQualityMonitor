@@ -5,12 +5,20 @@ from flask_bcrypt import Bcrypt
 from AQM.forms import LoginForm, RegistrationForm, RegisterNode, EmailForm, PasswordForm
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+# Util
 import csv
 import time
 import os
 import uuid
+# Database
 import dbm
 import sqlite3
+# Graphing
+import plotly
+import plotly.graph_objects as go
+import json
+import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -134,6 +142,9 @@ def node(node_id):
                                     format_number=True,
                                     )
 
+        # Plot
+        graph_json = plot(rows)
+
         if request.method == "POST":
             if current_user.is_authenticated:
                 alert = dbm.alert_exists(current_user.get_id(), node_id, request.form.get('measurement'),
@@ -150,7 +161,7 @@ def node(node_id):
 
         return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows, page=page,
                                per_page=per_page,
-                               pagination=pagination)
+                               pagination=pagination, graph_json=graph_json)
     else:
         return redirect(url_for('index'))
 
@@ -393,6 +404,22 @@ def node_download(node_id):
     r.headers.set('Content-Disposition', 'attachment', filename=filename)
 
     return r
+
+
+def plot(rows):
+    rows = [dict(row) for row in rows]
+
+    print(rows)
+
+    df = pd.DataFrame(rows)
+    del df['id']  # Remove redundant record id
+
+    trace = go.Scatter(x=df['time'], y=df['temp'])
+
+    data = [trace]
+    graph_json = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return graph_json
 
 
 def generate_node_token():
