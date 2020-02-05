@@ -69,7 +69,11 @@
         </div>
     </div>
     {% endif %}
-    {{ pagination.info }}
-    {{ pagination.links }}
+    <div class="row justify-content-center">
+        <div class="col-sm-6">
+            {{ pagination.info }}
+            {{ pagination.links }}
+        </div>
+    </div>
 </div>
 {% endblock content %}
