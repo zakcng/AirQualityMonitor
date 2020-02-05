@@ -4,58 +4,57 @@
     <div class="row justify-content-center">
         <div class="col-8">
             <div class="content-section">
-                <legend class="border-bottom mb-4">Graph</legend>
+                <legend class="border-bottom mb-2">Graph</legend>
                 <div id="chart" class="chart">
                 </div>
             </div>
         </div>
         <div class="col-4">
             <div class="content-section">
-                <div class="container">
-                    <legend class="border-bottom mb-3">Node</legend>
-                    <div class="row pl-3 mb-2">
-                        <span class="oi oi-tag node-info"></span>{{node.name}}
-                    </div>
-                    <div class="row pl-3 mb-2">
-                        <span class="oi oi-globe node-info"></span>{{node.location}}
-                    </div>
-                    <legend class="border-bottom mb-2">Latest Information</legend>
-                    {% if last_node_record.temp is defined and last_node_record.temp %}
-                    <p>Temperature: {{ last_node_record.temp }}</p>
-                    {% else %}
-                    <p>Temperature: N/A</p>
-                    {% endif %}
-
-                    {% if last_node_record.humidity is defined and last_node_record.humidity %}
-                    <p>Humidity: {{ last_node_record.humidity }}</p>
-                    {% else %}
-                    <p>Humidity: N/A</p>
-                    {% endif %}
-
-                    {% if last_node_record.barometric_pressure is defined and last_node_record.barometric_pressure %}
-                    <p>Barometric Pressure: {{ last_node_record.barometric_pressure }}</p>
-                    {% else %}
-                    <p>Barometric Pressure: N/A</p>
-                    {% endif %}
-
-                    {% if last_node_record.pm_25 is defined and last_node_record.pm_25 %}
-                    <p>PM2.5: {{ last_node_record.pm_25 }}</p>
-                    {% else %}
-                    <p>PM2.5: N/A</p>
-                    {% endif %}
-
-                    {% if last_node_record.pm_10 is defined and last_node_record.pm_10 %}
-                    <p>PM10: {{ last_node_record.pm_10 }}</p>
-                    {% else %}
-                    <p>PM10: N/A</p>
-                    {% endif %}
-                    <legend class="border-bottom mb-3"></legend>
-                    <div class="row pl-3 mb-2">
-                        <form action="{{ url_for('node_download', node_id=node.node_id) }}" method="POST">
-                            <input class="btn btn-secondary" type="submit" value="Download data">
-                        </form>
-                    </div>
+                <legend class="border-bottom mb-3">Node</legend>
+                <div class="row pl-3 mb-2">
+                    <span class="oi oi-tag node-info"></span>{{node.name}}
                 </div>
+                <div class="row pl-3 mb-2">
+                    <span class="oi oi-globe node-info"></span>{{node.location}}
+                </div>
+                <legend class="border-bottom mb-2">Latest Information</legend>
+                {% if last_node_record.temp is defined and last_node_record.temp %}
+                <p>Temperature: {{ last_node_record.temp }}</p>
+                {% else %}
+                <p>Temperature: N/A</p>
+                {% endif %}
+
+                {% if last_node_record.humidity is defined and last_node_record.humidity %}
+                <p>Humidity: {{ last_node_record.humidity }}</p>
+                {% else %}
+                <p>Humidity: N/A</p>
+                {% endif %}
+
+                {% if last_node_record.barometric_pressure is defined and last_node_record.barometric_pressure %}
+                <p>Barometric Pressure: {{ last_node_record.barometric_pressure }}</p>
+                {% else %}
+                <p>Barometric Pressure: N/A</p>
+                {% endif %}
+
+                {% if last_node_record.pm_25 is defined and last_node_record.pm_25 %}
+                <p>PM2.5: {{ last_node_record.pm_25 }}</p>
+                {% else %}
+                <p>PM2.5: N/A</p>
+                {% endif %}
+
+                {% if last_node_record.pm_10 is defined and last_node_record.pm_10 %}
+                <p>PM10: {{ last_node_record.pm_10 }}</p>
+                {% else %}
+                <p>PM10: N/A</p>
+                {% endif %}
+                <legend class="border-bottom mb-3"></legend>
+                <div class="row pl-3 mb-2">
+                    <form action="{{ url_for('node_download', node_id=node.node_id) }}" method="POST">
+                        <input class="btn btn-secondary" type="submit" value="Download data">
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -106,53 +105,52 @@
         </div>
     </div>
     {% else %}
-     <div class="row justify-content-center">
+    <div class="row justify-content-center">
         <div class="col-12">
             <div class="content-section opaque">
                 <legend class="border-bottom mb-4 text-muted">Alert Management</legend>
                 <form action="" method="POST">
                     <fieldset disabled>
-                    <div class="form-group row">
-                        <label class="control-label col-md-2 h5 text-muted">IF</label>
-                        <div class="col-md-3">
-                            <select class="form-control" name="measurement">
-                                <option value="0">Temperature</option>
-                                <option value="1">Humidity</option>
-                                <option value="2">Barometric Pressure</option>
-                                <option value="3">PM2.5</option>
-                                <option value="4">PM10</option>
-                            </select>
+                        <div class="form-group row">
+                            <label class="control-label col-md-2 h5 text-muted">IF</label>
+                            <div class="col-md-3">
+                                <select class="form-control" name="measurement">
+                                    <option value="0">Temperature</option>
+                                    <option value="1">Humidity</option>
+                                    <option value="2">Barometric Pressure</option>
+                                    <option value="3">PM2.5</option>
+                                    <option value="4">PM10</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="control-label col-md-2 h5 text-muted">STATE</label>
-                        <div class="col-md-3">
-                            <select class="form-control" name="state">
-                                <option value="<">Is Less Than</option>
-                                <option value="==">Is Equal To</option>
-                                <option value=">">Is Greater Than</option>
-                            </select>
+                        <div class="form-group row">
+                            <label class="control-label col-md-2 h5 text-muted">STATE</label>
+                            <div class="col-md-3">
+                                <select class="form-control" name="state">
+                                    <option value="<">Is Less Than</option>
+                                    <option value="==">Is Equal To</option>
+                                    <option value=">">Is Greater Than</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label class="control-label col-md-2 h5 text-muted">VALUE</label>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" name="value" placeholder="">
+                        <div class="form-group row">
+                            <label class="control-label col-md-2 h5 text-muted">VALUE</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="value" placeholder="">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-sm-10">
-                           <button type="button" class="btn btn-secondary btn-lg" disabled>Create Alert</button>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="button" class="btn btn-secondary btn-lg" disabled>Create Alert</button>
+                            </div>
                         </div>
-                    </div>
                     </fieldset>
                 </form>
             </div>
         </div>
     </div>
     {% endif %}
-    <!--    TODO: Have alert management options greyed out if not logged in.-->
 
     <div class="row justify-content-center">
         <div class="col-12">
@@ -200,7 +198,12 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script type="text/javascript">
-var graphs = {{graph_json | safe}};
-Plotly.plot('chart',graphs,{});
+    var graphs = {
+    {
+        graph_json | safe
+    }
+    }
+    ;
+    Plotly.plot('chart', graphs, {});
 </script>
 {% endblock scripts %}
