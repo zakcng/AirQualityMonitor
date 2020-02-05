@@ -201,6 +201,13 @@ def remove_user_by_name(username):
     db_con.commit()
 
 
+def remove_alert_by_id(alert_id):
+    # Remove an alert by alert_id
+    cursor.execute("DELETE FROM alerts where alert_id=?", (alert_id,))
+
+    db_con.commit()
+
+
 def get_node_names():
     db_con.row_factory = lambda cursor, row: row[0]
     c = db_con.cursor()

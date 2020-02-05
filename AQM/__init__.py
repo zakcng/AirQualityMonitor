@@ -289,7 +289,11 @@ def account():
 
     if request.method == "POST":
         if request.form.get('remove_alert'):
-            print("Remove Alert")
+            dbm.remove_alert_by_id(request.form.get('node_id'))
+
+            flash(f'• Alert removed', 'success')
+
+            return redirect(url_for('account'))
         elif request.form.get('set_units'):
             print("Set Units")
 

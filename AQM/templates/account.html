@@ -9,7 +9,7 @@
                     <h4>Alerts</h4>
                     {% if alerts|length %}
                     <form method="POST" action="">
-                        <select name="account_name" class="mdb-select md-form">
+                        <select name="node_id" class="mdb-select md-form">
                             <option hidden>Select alert:</option>
                             {% for alert in alerts %}
                             <option value="{{ alert.alert_id }}">{{ alert.name }} -
