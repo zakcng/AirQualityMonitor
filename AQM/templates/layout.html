@@ -42,7 +42,7 @@
                     {% if current_user.get_user_type() == 0 %}
                     <a class="nav-item nav-link" href="{{ url_for('admin_cp') }}">Control Panel</a>
                     {% endif %}
-                    <a class="nav-item nav-link" href="">Account</a>
+                    <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
                     <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                     {% else %}
                     <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>

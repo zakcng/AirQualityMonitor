@@ -267,6 +267,12 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
+@app.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    return render_template('account.html', title='Account Management')
+
+
 @app.route('/admin-cp', methods=['GET', 'POST'])
 @login_required
 def admin_cp():
