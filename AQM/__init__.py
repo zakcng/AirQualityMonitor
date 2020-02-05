@@ -142,10 +142,6 @@ def node(node_id):
                                  request.form.get('value'))
                 flash(f'• Successfully added alert!', 'success')
 
-        if not last_node_record:
-            # TODO: Created dictionary with null values for last_node_record
-            pass
-
         return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows, page=page,
                                per_page=per_page,
                                pagination=pagination)

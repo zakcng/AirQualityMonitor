@@ -18,11 +18,35 @@
                         <span class="oi oi-globe node-info"></span>{{node.location}}
                     </div>
                     <legend class="border-bottom mb-2">Latest Information</legend>
+                    {% if last_node_record.temp is defined and last_node_record.temp %}
                     <p>Temperature: {{ last_node_record.temp }}</p>
+                    {% else %}
+                    <p>Temperature: N/A</p>
+                    {% endif %}
+                    
+                    {% if last_node_record.humidity is defined and last_node_record.humidity %}
                     <p>Humidity: {{ last_node_record.humidity }}</p>
+                    {% else %}
+                    <p>Humidity: N/A</p>
+                    {% endif %}
+
+                    {% if last_node_record.barometric_pressure is defined and last_node_record.barometric_pressure %}
                     <p>Barometric Pressure: {{ last_node_record.barometric_pressure }}</p>
+                    {% else %}
+                    <p>Barometric Pressure: N/A</p>
+                    {% endif %}
+
+                    {% if last_node_record.pm_25 is defined and last_node_record.pm_25 %}
                     <p>PM2.5: {{ last_node_record.pm_25 }}</p>
+                    {% else %}
+                    <p>PM2.5: N/A</p>
+                    {% endif %}
+
+                    {% if last_node_record.pm_10 is defined and last_node_record.pm_10 %}
                     <p>PM10: {{ last_node_record.pm_10 }}</p>
+                    {% else %}
+                    <p>PM10: N/A</p>
+                    {% endif %}
                     <legend class="border-bottom mb-3"></legend>
                     <div class="row pl-3 mb-2">
                         <form action="{{ url_for('node_download', node_id=node.node_id) }}" method="POST">
@@ -67,7 +91,7 @@
                     <div class="form-group row">
                         <label class="control-label col-md-2 h5">VALUE</label>
                         <div class="col-md-3">
-                           <input type="text" class="form-control" name="value" placeholder="">
+                            <input type="text" class="form-control" name="value" placeholder="">
                         </div>
                     </div>
                     <div class="form-group row">
