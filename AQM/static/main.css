@@ -53,3 +53,14 @@ span.node-info {
     margin-top: 0;
     line-height: 34px;
 }
+
+a.unlink {
+  color: inherit;
+  text-decoration: none;
+  list-style: none;
+}
+a.unlink:hover {
+  color: inherit;
+  text-decoration: none;
+  list-style: none;
+}

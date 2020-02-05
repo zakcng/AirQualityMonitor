@@ -134,11 +134,9 @@ def node(node_id):
                                     format_number=True,
                                     )
 
-        # rows = dbm.return_all_quality_records_by_node_id(node_id)
-
         if request.method == "POST":
             if current_user.is_authenticated:
-                dbm.insert_alert(current_user.get_id(), request.form.get('measurement'), request.form.get('state'),
+                dbm.insert_alert(current_user.get_id(), node_id, request.form.get('measurement'), request.form.get('state'),
                                  request.form.get('value'))
                 flash(f'• Successfully added alert!', 'success')
 

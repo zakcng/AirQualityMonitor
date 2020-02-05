@@ -73,6 +73,7 @@ def db_setup():
     CREATE TABLE alerts (
         alert_id INTEGER PRIMARY KEY,
         account_id INTEGER NOT NULL,
+        node_id INTEGER NOT NULL,
         measurement INTEGER NOT NULL,
         state TEXT NOT NULL,
         value REAL NOT NULL,
@@ -128,12 +129,13 @@ def insert_user(username, password, email):
     db_con.commit()
 
 
-def insert_alert(account_id, measurement, state, value):
+def insert_alert(account_id, node_id, measurement, state, value):
     # Creates a standard permission user account
     cursor.execute(
-        '''INSERT INTO alerts(alert_id, account_id, measurement, state, value) VALUES(null,?,?,?,?)''', (account_id,
-                                                                                                         measurement,
-                                                                                                         state, value))
+        '''INSERT INTO alerts(alert_id, node_id, account_id, measurement, state, value) VALUES(null,?,?,?,?)''',
+        (account_id, node_id,
+         measurement,
+         state, value))
 
     db_con.commit()
 
