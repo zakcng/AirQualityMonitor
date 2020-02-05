@@ -132,7 +132,7 @@ def insert_user(username, password, email):
 def insert_alert(account_id, node_id, measurement, state, value):
     # Creates a standard permission user account
     cursor.execute(
-        '''INSERT INTO alerts(alert_id, node_id, account_id, measurement, state, value) VALUES(null,?,?,?,?)''',
+        '''INSERT INTO alerts(alert_id, node_id, account_id, measurement, state, value) VALUES(null,?,?,?,?,?)''',
         (account_id, node_id,
          measurement,
          state, value))
