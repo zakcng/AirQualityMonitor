@@ -159,6 +159,20 @@ def node_exists(node_id):
         return False
 
 
+def alert_exists(account_id, node_id, measurement, state, value):
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute(
+        "SELECT * FROM alerts WHERE account_id=? AND node_id=? AND measurement=? AND state=? and value=?",
+        (account_id, node_id, measurement, state, value))
+    exists = cust_cursor.fetchone()
+
+    if exists:
+        return True
+    else:
+        return False
+
+
 def get_node_token_by_name(node_name):
     # Return the node token identified by node name
     db_con.row_factory = sqlite3.Row

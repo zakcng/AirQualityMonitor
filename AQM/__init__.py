@@ -136,9 +136,17 @@ def node(node_id):
 
         if request.method == "POST":
             if current_user.is_authenticated:
-                dbm.insert_alert(current_user.get_id(), node_id, request.form.get('measurement'), request.form.get('state'),
-                                 request.form.get('value'))
-                flash(f'• Successfully added alert!', 'success')
+                alert = dbm.alert_exists(current_user.get_id(), node_id, request.form.get('measurement'),
+                                         request.form.get('state'),
+                                         request.form.get('value'))
+
+                if not alert:
+                    dbm.insert_alert(current_user.get_id(), node_id, request.form.get('measurement'),
+                                     request.form.get('state'),
+                                     request.form.get('value'))
+                    flash(f'• Successfully added alert!', 'success')
+                else:
+                    flash(f'• Alert already exists for this node!', 'danger')
 
         return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows, page=page,
                                per_page=per_page,
