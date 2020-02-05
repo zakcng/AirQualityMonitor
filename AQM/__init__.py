@@ -120,7 +120,7 @@ def node(node_id):
 
         page, per_page, offset = get_page_args(page_parameter='page',
                                                per_page_parameter='per_page')
-        
+
         sql = "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC limit {}, {}".format(
             node_id, offset, per_page)
         g.cur.execute(sql)
