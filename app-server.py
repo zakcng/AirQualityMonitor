@@ -29,7 +29,7 @@ def service_connection(key, mask):
             # Functional
             node_data = pickle.loads(recv_data)
             dbm.insert_quality_record(node_data)
-            # detect_alert_requirement(node_data)
+            detect_alert_requirement(node_data)
         else:
             print('Closing connection: {}'.format(data.addr))
             selector.unregister(sock)
@@ -37,7 +37,7 @@ def service_connection(key, mask):
 
 
 def detect_alert_requirement(node_data):
-    alerts = dbm.return_all_alerts()
+    alerts = dbm.return_all_alerts(node_data[0])
 
     if alerts:
         for alert in alerts:

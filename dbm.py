@@ -103,8 +103,7 @@ def insert_quality_record(node_data):
 
     # Calculate node id from token
     token = str(node_data[0])
-    find_node_sql = cursor.execute("SELECT * FROM nodes WHERE token=?", (token,)).fetchone()
-    node_id = find_node_sql[0]
+    node_id = get_node_id_by_token(token)
 
     cursor.execute('''INSERT INTO quality_records(id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
                       VALUES(null,?,?,?,?,?,?,?)''',
@@ -132,7 +131,7 @@ def insert_user(username, password, email):
 def insert_alert(account_id, node_id, measurement, state, value):
     # Creates a standard permission user account
     cursor.execute(
-        '''INSERT INTO alerts(alert_id, node_id, account_id, measurement, state, value) VALUES(null,?,?,?,?,?)''',
+        '''INSERT INTO alerts(alert_id, account_id, node_id, measurement, state, value) VALUES(null,?,?,?,?,?)''',
         (account_id, node_id,
          measurement,
          state, value))
@@ -202,6 +201,17 @@ def get_usernames():
     names = c.execute("SELECT username FROM 'accounts' WHERE user_type = 1").fetchall()
 
     return names
+
+
+def get_node_id_by_token(token):
+    # Calculate node id from token
+    find_node_sql = cursor.execute("SELECT * FROM nodes WHERE token=?", (token,)).fetchone()
+    node_id = find_node_sql[0]
+
+    if node_id:
+        return node_id
+    else:
+        return None
 
 
 def get_node_name_by_id(node_id):
@@ -328,11 +338,15 @@ def return_all_quality_records_by_node_id(node_id):
         return None
 
 
-def return_all_alerts():
+def return_all_alerts(token):
+    # Returns all alerts related to that node_id accessed via the token
+
+    node_id = get_node_id_by_token(token)
+
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute(
-        "SELECT * FROM alerts")
+        "SELECT * FROM alerts WHERE node_id={}".format(node_id))
 
     record = cust_cursor.fetchall()
 
