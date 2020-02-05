@@ -259,6 +259,21 @@ def get_live_node_names():
     return names
 
 
+def get_alerts_by_user_id(user_id):
+    # Return alerts given a users id
+    # Join for node_name
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+
+    cust_cursor.execute(
+        "SELECT alert_id, account_id, alerts.node_id, measurement, state, value, name FROM alerts  INNER JOIN nodes WHERE account_id = ?",
+        (user_id,))
+
+    alerts = cust_cursor.fetchall()
+
+    return alerts
+
+
 def get_account_email_by_account_id(account_id):
     # Return the username and email using the account_id
     db_con.row_factory = sqlite3.Row

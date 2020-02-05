@@ -5,7 +5,51 @@
         <div class="col-5">
             <div class="content-section">
                 <legend class="border-bottom mb-4">Account Management</legend>
-
+                <div class="alerts">
+                    <h4>Alerts</h4>
+                    {% if alerts|length %}
+                    <form method="POST" action="">
+                        <select name="account_name" class="mdb-select md-form">
+                            <option hidden>Select alert:</option>
+                            {% for alert in alerts %}
+                            <option value="{{ alert.alert_id }}">{{ alert.name }} -
+                                {{alert.measurement}} {{alert.state}} {{alert.value}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <fieldset class="form-group my-3">
+                            <div class="btn-group-vertical">
+                                <div class="form-group">
+                                    <button type="submit" class="btn-dgr btn btn-outline-info" name="remove_alert"
+                                            value="true">Remove Alert
+                                    </button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    {% else %}
+                    <p>You haven't created any alerts yet.</p>
+                    {% endif %}
+                </div>
+                <div class="Units">
+                    <h4>Units</h4>
+                    <form method="POST" action="">
+                        <select name="account_name" class="mdb-select md-form">
+                            <option hidden>Select Units:</option>
+                            <option value="0">Metric - Celsius</option>
+                            <option value="1">Imperial - Fahrenheit</option>
+                        </select>
+                        <fieldset class="form-group my-3">
+                            <div class="btn-group-vertical">
+                                <div class="form-group">
+                                    <button type="submit" class="btn-dgr btn btn-outline-info" name="set_units"
+                                            value="true">Set Units
+                                    </button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -270,7 +270,30 @@ def register():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    return render_template('account.html', title='Account Management')
+    alerts = dbm.get_alerts_by_user_id(current_user.get_id())
+
+    # Workaround for SQLite row not allowing assignment
+    dict_rows = [dict(row) for row in alerts]
+    # Convert back to human readable
+    for alert in dict_rows:
+        if alert['measurement'] == 0:
+            alert['measurement'] = 'Temperature'
+        elif alert['measurement'] == 1:
+            alert['measurement'] = 'Humidity'
+        elif alert['measurement'] == 2:
+            alert['measurement'] = 'Barometric Pressure'
+        elif alert['measurement'] == 3:
+            alert['measurement'] = 'PM2.5'
+        elif alert['measurement'] == 4:
+            alert['measurement'] = 'PM10'
+
+    if request.method == "POST":
+        if request.form.get('remove_alert'):
+            print("Remove Alert")
+        elif request.form.get('set_units'):
+            print("Set Units")
+
+    return render_template('account.html', title='Account Management', alerts=dict_rows)
 
 
 @app.route('/admin-cp', methods=['GET', 'POST'])
