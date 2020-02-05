@@ -110,24 +110,45 @@ def nodes():
 @app.route('/node/<int:node_id>', methods=['GET', 'POST'])
 def node(node_id):
     node_exists = dbm.node_exists(node_id)
-    last_node_record = dbm.return_latest_quality_record_by_node_id(node_id)
-    rows = dbm.return_all_quality_records_by_node_id(node_id)
-
-    if request.method == "POST":
-        if current_user.is_authenticated:
-            dbm.insert_alert(current_user.get_id(), request.form.get('measurement'), request.form.get('state'),
-                             request.form.get('value'))
-            flash(f'• Successfully added alert!', 'success')
-
-    if not last_node_record:
-        # TODO: Created dictionary with null values for last_node_record
-        pass
 
     if node_exists:
         node = dbm.return_node_by_id(node_id)
-        for n in node:
-            print(n)
-        return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows)
+        last_node_record = dbm.return_latest_quality_record_by_node_id(node_id)
+
+        g.cur.execute("select count(*) FROM 'quality_records' WHERE node_id={}".format(node_id))
+        total = g.cur.fetchone()[0]
+
+        page, per_page, offset = get_page_args(page_parameter='page',
+                                               per_page_parameter='per_page')
+        
+        sql = "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC limit {}, {}".format(
+            node_id, offset, per_page)
+        g.cur.execute(sql)
+        rows = g.cur.fetchall()
+
+        pagination = get_pagination(page=page,
+                                    per_page=per_page,
+                                    total=total,
+                                    record_name='rows',
+                                    format_total=True,
+                                    format_number=True,
+                                    )
+
+        # rows = dbm.return_all_quality_records_by_node_id(node_id)
+
+        if request.method == "POST":
+            if current_user.is_authenticated:
+                dbm.insert_alert(current_user.get_id(), request.form.get('measurement'), request.form.get('state'),
+                                 request.form.get('value'))
+                flash(f'• Successfully added alert!', 'success')
+
+        if not last_node_record:
+            # TODO: Created dictionary with null values for last_node_record
+            pass
+
+        return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows, page=page,
+                               per_page=per_page,
+                               pagination=pagination)
     else:
         return redirect(url_for('index'))
 
