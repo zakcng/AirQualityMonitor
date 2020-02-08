@@ -414,10 +414,11 @@ def plot(rows):
     df = pd.DataFrame(rows)
     del df['id']  # Remove redundant record id
 
-    trace = go.Scatter(x=df['time'], y=df['temp'])
+    fig = go.Figure()
 
-    data = [trace]
-    graph_json = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    fig.add_trace(go.Scatter(x=df['time'], y=df['temp']))
+
+    graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return graph_json
 
