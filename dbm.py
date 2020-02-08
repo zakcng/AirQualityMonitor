@@ -273,7 +273,7 @@ def get_alerts_by_user_id(user_id):
     cust_cursor = db_con.cursor()
 
     cust_cursor.execute(
-        "SELECT alert_id, account_id, alerts.node_id, measurement, state, value FROM alerts INNER JOIN nodes on alerts.node_id=nodes.node_id WHERE account_id = ?",
+        "SELECT alert_id, account_id, alerts.node_id, measurement, state, value, name FROM alerts INNER JOIN nodes on alerts.node_id=nodes.node_id WHERE account_id = ?",
         (user_id,))
 
     alerts = cust_cursor.fetchall()
