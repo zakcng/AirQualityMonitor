@@ -6,7 +6,7 @@
             <div class="content-section">
                 <legend class="border-bottom mb-4">Account Management</legend>
                 <div class="alerts">
-                    <h4>Alerts</h4>
+                    <h5>Alerts</h5>
                     {% if alerts|length %}
                     <form method="POST" action="">
                         <select name="node_id" class="mdb-select md-form">
@@ -32,7 +32,7 @@
                     {% endif %}
                 </div>
                 <div class="Units">
-                    <h4>Units</h4>
+                    <h5>Units</h5>
                     <form method="POST" action="">
                         <select name="account_name" class="mdb-select md-form">
                             <option hidden>Select Units:</option>
@@ -42,7 +42,7 @@
                         <fieldset class="form-group my-3">
                             <div class="btn-group-vertical">
                                 <div class="form-group">
-                                    <button type="submit" class="btn-dgr btn btn-outline-info" name="set_units"
+                                    <button type="submit" class="btn btn-outline-info" name="set_units"
                                             value="true">Set Units
                                     </button>
                                 </div>
