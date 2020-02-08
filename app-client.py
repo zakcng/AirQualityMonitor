@@ -6,17 +6,16 @@ import random
 import pickle
 import argparse
 
-
 selector = selectors.DefaultSelector()
 
 
 def get_temp():
     if emulate:
-        # temp = (random.randint(19, 32))
+        #temp = (random.randint(19, 32))
         temp = 20
         return temp
     else:
-        temp = round(sense.get_temperature(),2)
+        temp = round(sense.get_temperature(), 2)
         return temp
 
 
@@ -24,7 +23,7 @@ def get_humidity():
     if emulate:
         return 32.2
     else:
-        humidity = round(sense.get_humidity(),2)
+        humidity = round(sense.get_humidity(), 2)
         return humidity
 
 
@@ -32,7 +31,7 @@ def get_barometric_pressure():
     if emulate:
         return 32.2
     else:
-        pressure = round(sense.get_pressure(),2)
+        pressure = round(sense.get_pressure(), 2)
         return pressure
 
 
@@ -51,7 +50,6 @@ def get_pm_10():
 
 
 def package_data(token):
-
     data = [token, get_temp(), get_humidity(), get_barometric_pressure(), get_pm_25(), get_pm_10()]
     return data
 
@@ -111,10 +109,10 @@ if __name__ == '__main__':
     port = 12345
     BUFFER_SIZE = 1024
     TICK_RATE = 60
-    UID = 0  # Will be MAC address
 
     if not emulate:
         from sense_hat import SenseHat
+
         sense = SenseHat()
 
     start_time = time.time()
