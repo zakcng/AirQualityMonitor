@@ -6,7 +6,6 @@ https://stackoverflow.com/questions/2854011/get-a-list-of-field-values-from-pyth
 
 import os
 import sqlite3
-import datetime
 from AQM import server_config
 
 # Default path for db file
@@ -77,6 +76,7 @@ def db_setup():
         measurement INTEGER NOT NULL,
         state TEXT NOT NULL,
         value REAL NOT NULL,
+        time_triggered TEXT,
         FOREIGN KEY (account_id)
             REFERENCES accounts (account_id)
         );
@@ -98,9 +98,7 @@ def db_setup():
     db_con.commit()
 
 
-def insert_quality_record(node_data):
-    dt = datetime.datetime.now().isoformat()
-
+def insert_quality_record(node_data, dt):
     # Calculate node id from token
     token = str(node_data[0])
     node_id = get_node_id_by_token(token)
@@ -135,6 +133,14 @@ def insert_alert(account_id, node_id, measurement, state, value):
         (account_id, node_id,
          measurement,
          state, value))
+
+    db_con.commit()
+
+
+def insert_alert_triggered_time(alert_id, dt):
+    # Updates the triggered time of an alert
+    cursor.execute(
+        '''UPDATE alerts SET triggered_time = ? WHERE alert_id = ?''', (dt, alert_id))
 
     db_con.commit()
 

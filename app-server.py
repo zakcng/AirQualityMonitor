@@ -2,6 +2,7 @@ import selectors
 import types
 import socket
 import pickle
+import datetime
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import dbm
@@ -28,15 +29,17 @@ def service_connection(key, mask):
         if recv_data:
             # Functional
             node_data = pickle.loads(recv_data)
-            dbm.insert_quality_record(node_data)
-            detect_alert_requirement(node_data)
+            # Time received
+            dt = datetime.datetime.now().isoformat()
+            dbm.insert_quality_record(node_data, dt)
+            detect_alert_requirement(node_data, dt)
         else:
             print('Closing connection: {}'.format(data.addr))
             selector.unregister(sock)
             sock.close()
 
 
-def detect_alert_requirement(node_data):
+def detect_alert_requirement(node_data, dt):
     alerts = dbm.return_all_alerts(node_data[0])
 
     if alerts:
@@ -44,56 +47,56 @@ def detect_alert_requirement(node_data):
             if alert['measurement'] == 0:  # Temperature
                 if alert['state'] == '<':
                     if node_data[1] < alert['value']:
-                        send_alert(alert, node_data[1])
+                        send_alert(alert, node_data[1], dt)
                 elif alert['state'] == '==':
                     if node_data[1] == alert['value']:
-                        send_alert(alert, node_data[1])
+                        send_alert(alert, node_data[1], dt)
                 elif alert['state'] == '>':
                     if node_data[1] > alert['value']:
-                        send_alert(alert, node_data[1])
+                        send_alert(alert, node_data[1], dt)
             elif alert['measurement'] == 1:  # Humidity
                 if alert['state'] == '<':
                     if node_data[2] < alert['value']:
-                        send_alert(alert, node_data[2])
+                        send_alert(alert, node_data[2], dt)
                 elif alert['state'] == '==':
                     if node_data[2] == alert['value']:
-                        send_alert(alert, node_data[2])
+                        send_alert(alert, node_data[2], dt)
                 elif alert['state'] == '>':
                     if node_data[2] > alert['value']:
-                        send_alert(alert, node_data[2])
+                        send_alert(alert, node_data[2], dt)
             elif alert['measurement'] == 2:  # Barometric Pressure
                 if alert['state'] == '<':
                     if node_data[3] < alert['value']:
-                        send_alert(alert, node_data[3])
+                        send_alert(alert, node_data[3], dt)
                 elif alert['state'] == '==':
                     if node_data[3] == alert['value']:
-                        send_alert(alert, node_data[3])
+                        send_alert(alert, node_data[3], dt)
                 elif alert['state'] == '>':
                     if node_data[3] > alert['value']:
-                        send_alert(alert, node_data[3])
+                        send_alert(alert, node_data[3], dt)
             elif alert['measurement'] == 3:  # PM2.5
                 if alert['state'] == '<':
                     if node_data[4] < alert['value']:
-                        send_alert(alert, node_data[4])
+                        send_alert(alert, node_data[4], dt)
                 elif alert['state'] == '==':
                     if node_data[4] == alert['value']:
-                        send_alert(alert, node_data[4])
+                        send_alert(alert, node_data[4], dt)
                 elif alert['state'] == '>':
                     if node_data[4] > alert['value']:
-                        send_alert(alert, node_data[4])
+                        send_alert(alert, node_data[4], dt)
             elif alert['measurement'] == 4:  # PM10
                 if alert['state'] == '<':
                     if node_data[5] < alert['value']:
-                        send_alert(alert, node_data[5])
+                        send_alert(alert, node_data[5], dt)
                 elif alert['state'] == '==':
                     if node_data[5] == alert['value']:
-                        send_alert(alert, node_data[5])
+                        send_alert(alert, node_data[5], dt)
                 elif alert['state'] == '>':
                     if node_data[5] > alert['value']:
-                        send_alert(alert, node_data[5])
+                        send_alert(alert, node_data[5], dt)
 
 
-def send_alert(alert, node_data):
+def send_alert(alert, node_data, dt):
     user_record = dbm.get_account_email_by_account_id(alert['account_id'])
 
     if alert['measurement'] == 0:
@@ -126,6 +129,9 @@ def send_alert(alert, node_data):
 
     print(response.status_code)
     print(f"Alert sent to {user_record['email']}")
+
+    # Record time to database.
+    dbm.insert_alert_triggered_time(alert['alert_id'], dt)
 
 
 if __name__ == '__main__':

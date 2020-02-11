@@ -417,6 +417,10 @@ def plot(rows):
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(x=df['time'], y=df['temp']))
+    fig.update_layout(
+        xaxis_title="Time",
+        yaxis_title="Temperature",
+    )
 
     graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
