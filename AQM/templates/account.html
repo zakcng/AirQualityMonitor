@@ -24,7 +24,7 @@
                             <tr>
                                 <td>{{ alert.name }} - {{alert.measurement}} {{alert.state}} {{alert.value}}</td>
                                 {% if alert.time_triggered is not none %}
-                                <td>{{ alert.time_triggered }}</td>
+                                <td>{{ alert.time_triggered[:-7]|replace("T", " ") }}</td>
                                 {% else %}
                                 <td>N/A</td>
                                 {% endif %}
