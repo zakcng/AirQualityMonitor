@@ -44,56 +44,60 @@ def detect_alert_requirement(node_data, dt):
 
     if alerts:
         for alert in alerts:
-            if alert['measurement'] == 0:  # Temperature
-                if alert['state'] == '<':
-                    if node_data[1] < alert['value']:
-                        send_alert(alert, node_data[1], dt)
-                elif alert['state'] == '==':
-                    if node_data[1] == alert['value']:
-                        send_alert(alert, node_data[1], dt)
-                elif alert['state'] == '>':
-                    if node_data[1] > alert['value']:
-                        send_alert(alert, node_data[1], dt)
-            elif alert['measurement'] == 1:  # Humidity
-                if alert['state'] == '<':
-                    if node_data[2] < alert['value']:
-                        send_alert(alert, node_data[2], dt)
-                elif alert['state'] == '==':
-                    if node_data[2] == alert['value']:
-                        send_alert(alert, node_data[2], dt)
-                elif alert['state'] == '>':
-                    if node_data[2] > alert['value']:
-                        send_alert(alert, node_data[2], dt)
-            elif alert['measurement'] == 2:  # Barometric Pressure
-                if alert['state'] == '<':
-                    if node_data[3] < alert['value']:
-                        send_alert(alert, node_data[3], dt)
-                elif alert['state'] == '==':
-                    if node_data[3] == alert['value']:
-                        send_alert(alert, node_data[3], dt)
-                elif alert['state'] == '>':
-                    if node_data[3] > alert['value']:
-                        send_alert(alert, node_data[3], dt)
-            elif alert['measurement'] == 3:  # PM2.5
-                if alert['state'] == '<':
-                    if node_data[4] < alert['value']:
-                        send_alert(alert, node_data[4], dt)
-                elif alert['state'] == '==':
-                    if node_data[4] == alert['value']:
-                        send_alert(alert, node_data[4], dt)
-                elif alert['state'] == '>':
-                    if node_data[4] > alert['value']:
-                        send_alert(alert, node_data[4], dt)
-            elif alert['measurement'] == 4:  # PM10
-                if alert['state'] == '<':
-                    if node_data[5] < alert['value']:
-                        send_alert(alert, node_data[5], dt)
-                elif alert['state'] == '==':
-                    if node_data[5] == alert['value']:
-                        send_alert(alert, node_data[5], dt)
-                elif alert['state'] == '>':
-                    if node_data[5] > alert['value']:
-                        send_alert(alert, node_data[5], dt)
+            # If the alert is state is enabled
+            if alert['enabled'] == 1:
+                if alert['measurement'] == 0:  # Temperature
+                    if alert['state'] == '<':
+                        if node_data[1] < alert['value']:
+                            send_alert(alert, node_data[1], dt)
+                    elif alert['state'] == '==':
+                        if node_data[1] == alert['value']:
+                            send_alert(alert, node_data[1], dt)
+                    elif alert['state'] == '>':
+                        if node_data[1] > alert['value']:
+                            send_alert(alert, node_data[1], dt)
+                elif alert['measurement'] == 1:  # Humidity
+                    if alert['state'] == '<':
+                        if node_data[2] < alert['value']:
+                            send_alert(alert, node_data[2], dt)
+                    elif alert['state'] == '==':
+                        if node_data[2] == alert['value']:
+                            send_alert(alert, node_data[2], dt)
+                    elif alert['state'] == '>':
+                        if node_data[2] > alert['value']:
+                            send_alert(alert, node_data[2], dt)
+                elif alert['measurement'] == 2:  # Barometric Pressure
+                    if alert['state'] == '<':
+                        if node_data[3] < alert['value']:
+                            send_alert(alert, node_data[3], dt)
+                    elif alert['state'] == '==':
+                        if node_data[3] == alert['value']:
+                            send_alert(alert, node_data[3], dt)
+                    elif alert['state'] == '>':
+                        if node_data[3] > alert['value']:
+                            send_alert(alert, node_data[3], dt)
+                elif alert['measurement'] == 3:  # PM2.5
+                    if alert['state'] == '<':
+                        if node_data[4] < alert['value']:
+                            send_alert(alert, node_data[4], dt)
+                    elif alert['state'] == '==':
+                        if node_data[4] == alert['value']:
+                            send_alert(alert, node_data[4], dt)
+                    elif alert['state'] == '>':
+                        if node_data[4] > alert['value']:
+                            send_alert(alert, node_data[4], dt)
+                elif alert['measurement'] == 4:  # PM10
+                    if alert['state'] == '<':
+                        if node_data[5] < alert['value']:
+                            send_alert(alert, node_data[5], dt)
+                    elif alert['state'] == '==':
+                        if node_data[5] == alert['value']:
+                            send_alert(alert, node_data[5], dt)
+                    elif alert['state'] == '>':
+                        if node_data[5] > alert['value']:
+                            send_alert(alert, node_data[5], dt)
+            else:
+                pass
 
 
 def send_alert(alert, node_data, dt):

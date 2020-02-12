@@ -12,7 +12,7 @@ selector = selectors.DefaultSelector()
 def get_temp():
     if emulate:
         #temp = (random.randint(19, 32))
-        temp = 22
+        temp = 23
         return temp
     else:
         temp = round(sense.get_temperature(), 2)
@@ -21,7 +21,7 @@ def get_temp():
 
 def get_humidity():
     if emulate:
-        return 32.2
+        return 29
     else:
         humidity = round(sense.get_humidity(), 2)
         return humidity
