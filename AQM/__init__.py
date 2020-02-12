@@ -296,15 +296,21 @@ def account():
         # 0 Green
         # 1 Red
         # 2 Warning
+
+        if value == latest_value:
+            if state == '==':
+                return 0
+            return 2
+
         ops = {'>': operator.gt,
                '<': operator.lt,
-               '=': operator.eq}
+               '==': operator.eq}
         print(str(latest_value) + state + str(value))
-        boolean_ret = ops[state](latest_value, value)
+        comp = ops[state](latest_value, value)
 
-        if boolean_ret:
+        if comp:
             return 0
-        elif not boolean_ret:
+        elif not comp:
             return 1
 
     for alert in dict_rows:

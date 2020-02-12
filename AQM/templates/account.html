@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-6">
+        <div class="col-8">
             <div class="content-section">
                 <legend class="border-bottom mb-4">Account Management</legend>
                 <div class="alerts">
@@ -22,7 +22,7 @@
                             <tbody>
                             {% for alert in alerts %}
                             <tr>
-                                <td>{{ alert.name }} - {{alert.measurement}} {{alert.state}} {{alert.value}} -- {{alert.colour}}</td>
+                                <td>{{ alert.name }} - {{alert.measurement}} {{alert.state}} {{alert.value}}</td>
                                 {% if alert.time_triggered is not none %}
                                 <td>{{ alert.time_triggered }}</td>
                                 {% else %}
@@ -32,6 +32,8 @@
                                 <td class="table-success">{{ alert.latest_value}}</td>
                                 {% elif alert.colour == 1 %}
                                 <td class="table-danger">{{ alert.latest_value}}</td>
+                                {% elif alert.colour == 2 %}
+                                <td class="table-warning">{{ alert.latest_value}}</td>
                                 {% endif %}
                                 {% if alert.enabled == 1 %}
                                 <td>

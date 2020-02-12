@@ -141,7 +141,7 @@ def insert_alert(account_id, node_id, measurement, state, value):
 def insert_alert_triggered_time(alert_id, dt):
     # Updates the triggered time of an alert
     cursor.execute(
-        '''UPDATE alerts SET triggered_time = ? WHERE alert_id = ?''', (dt, alert_id))
+        '''UPDATE alerts SET time_triggered = ? WHERE alert_id = ?''', (dt, alert_id))
 
     db_con.commit()
 
