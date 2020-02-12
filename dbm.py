@@ -77,6 +77,7 @@ def db_setup():
         state TEXT NOT NULL,
         value REAL NOT NULL,
         time_triggered TEXT,
+        enabled INTEGER NOT NULL,
         FOREIGN KEY (account_id)
             REFERENCES accounts (account_id)
         );
@@ -129,10 +130,10 @@ def insert_user(username, password, email):
 def insert_alert(account_id, node_id, measurement, state, value):
     # Creates a standard permission user account
     cursor.execute(
-        '''INSERT INTO alerts(alert_id, account_id, node_id, measurement, state, value) VALUES(null,?,?,?,?,?)''',
+        '''INSERT INTO alerts(alert_id, account_id, node_id, measurement, state, value, enabled) VALUES(null,?,?,?,?,?,?)''',
         (account_id, node_id,
          measurement,
-         state, value))
+         state, value, 1))
 
     db_con.commit()
 
@@ -272,6 +273,19 @@ def get_live_node_names():
     return names
 
 
+def get_latest_value_node(node_id, selector):
+    # Returns the current value from a node
+    # Return the username and email using the account_id
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute(
+        "SELECT {}, time FROM 'quality_records' where node_id=? ORDER BY time desc".format(selector),
+        (node_id,))
+    value = cust_cursor.fetchone()[0]
+
+    return value
+
+
 def get_alerts_by_user_id(user_id):
     # Return alerts given a users id
     # Join for node_name
@@ -279,7 +293,7 @@ def get_alerts_by_user_id(user_id):
     cust_cursor = db_con.cursor()
 
     cust_cursor.execute(
-        "SELECT alert_id, account_id, alerts.node_id, measurement, state, value, name FROM alerts INNER JOIN nodes on alerts.node_id=nodes.node_id WHERE account_id = ?",
+        "SELECT alert_id, account_id, alerts.node_id, measurement, state, value, time_triggered, enabled, name FROM alerts INNER JOIN nodes on alerts.node_id=nodes.node_id WHERE account_id = ?",
         (user_id,))
 
     alerts = cust_cursor.fetchall()

@@ -2,30 +2,59 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-5">
+        <div class="col-6">
             <div class="content-section">
                 <legend class="border-bottom mb-4">Account Management</legend>
                 <div class="alerts">
                     <h5>Alerts</h5>
                     {% if alerts|length %}
                     <form method="POST" action="">
-                        <select name="node_id" class="mdb-select md-form">
-                            <option hidden>Select alert:</option>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Alert</th>
+                                <th scope="col">Triggered</th>
+                                <th scope="col">Latest</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             {% for alert in alerts %}
-                            <option value="{{ alert.alert_id }}">{{ alert.name }} -
-                                {{alert.measurement}} {{alert.state}} {{alert.value}}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        <fieldset class="form-group my-3">
-                            <div class="btn-group-vertical">
-                                <div class="form-group">
-                                    <button type="submit" class="btn-dgr btn btn-outline-info" name="remove_alert"
-                                            value="true">Remove Alert
+                            <tr>
+                                <td>{{ alert.name }} - {{alert.measurement}} {{alert.state}} {{alert.value}} -- {{alert.colour}}</td>
+                                {% if alert.time_triggered is not none %}
+                                <td>{{ alert.time_triggered }}</td>
+                                {% else %}
+                                <td>N/A</td>
+                                {% endif %}
+                                {% if alert.colour == 0 %}
+                                <td class="table-success">{{ alert.latest_value}}</td>
+                                {% elif alert.colour == 1 %}
+                                <td class="table-danger">{{ alert.latest_value}}</td>
+                                {% endif %}
+                                {% if alert.enabled == 1 %}
+                                <td>
+                                    <button type="submit" class="btn-dgr btn btn-outline-info" name="disable_alert"
+                                            value="{{alert.alert_id}}">Disable
                                     </button>
-                                </div>
-                            </div>
-                        </fieldset>
+                                </td>
+                                {% else %}
+                                <td>
+                                    <button type="submit" class="btn btn-outline-info" name="enable_alert"
+                                            value="{{alert.alert_id}}">Enable
+                                    </button>
+                                </td>
+                                {% endif %}
+                                <td>
+                                    <button type="submit" class="btn-dgr btn btn-outline-info" name="remove_alert"
+                                            value="{{alert.alert_id}}">Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </form>
                     {% else %}
                     <p>You haven't created any alerts yet.</p>

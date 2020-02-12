@@ -9,6 +9,7 @@ from sendgrid.helpers.mail import Mail
 import csv
 import time
 import os
+import operator
 import uuid
 # Database
 import dbm
@@ -286,25 +287,59 @@ def account():
     # Workaround for SQLite row not allowing assignment
     dict_rows = [dict(row) for row in alerts]
     # Convert back to human readable
+
+    def get_alert_current_value(node_id, selector):
+        return dbm.get_latest_value_node(node_id, selector)
+
+    def get_alert_colour_cell(value, state, latest_value):
+        # Returns the colour used to display current value against the alert
+        # 0 Green
+        # 1 Red
+        # 2 Warning
+        ops = {'>': operator.gt,
+               '<': operator.lt,
+               '=': operator.eq}
+        print(str(latest_value) + state + str(value))
+        boolean_ret = ops[state](latest_value, value)
+
+        if boolean_ret:
+            return 0
+        elif not boolean_ret:
+            return 1
+
     for alert in dict_rows:
         if alert['measurement'] == 0:
             alert['measurement'] = 'Temperature'
+            alert['latest_value'] = get_alert_current_value(alert['node_id'], 'temp')
+            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 1:
             alert['measurement'] = 'Humidity'
+            alert['latest_value'] = get_alert_current_value(alert['node_id'], 'humidity')
+            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 2:
             alert['measurement'] = 'Barometric Pressure'
+            alert['latest_value'] = get_alert_current_value(alert['node_id'], 'barometric_pressure')
+            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 3:
             alert['measurement'] = 'PM2.5'
+            alert['latest_value'] = get_alert_current_value(alert['node_id'], 'pm_25')
+            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 4:
             alert['measurement'] = 'PM10'
+            alert['latest_value'] = get_alert_current_value(alert['node_id'], 'pm10')
+            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
 
     if request.method == "POST":
         if request.form.get('remove_alert'):
-            dbm.remove_alert_by_id(request.form.get('node_id'))
+            dbm.remove_alert_by_id(request.form.get('remove_alert'))
 
             flash(f'• Alert removed', 'success')
 
             return redirect(url_for('account'))
+        elif request.form.get('enable_alert'):
+            pass
+        elif request.form.get('disable_alert'):
+            pass
         elif request.form.get('set_units'):
             print("Set Units")
 
