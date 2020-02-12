@@ -132,6 +132,8 @@ def send_alert(alert, node_data, dt):
 
     # Record time to database.
     dbm.insert_alert_triggered_time(alert['alert_id'], dt)
+    # Disable alert
+    dbm.change_alert_state(alert['alert_id'], 0)
 
 
 if __name__ == '__main__':
