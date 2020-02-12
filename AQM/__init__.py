@@ -87,6 +87,11 @@ def index():
                            pagination=pagination, names=names)
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
 @app.route('/nodes')
 def nodes():
     g.cur.execute('select count(*) from nodes')
@@ -166,11 +171,6 @@ def node(node_id):
                                pagination=pagination, graph_json=graph_json)
     else:
         return redirect(url_for('index'))
-
-
-@app.route("/about")
-def about():
-    return render_template('about.html', title='About')
 
 
 @app.route("/login", methods=['GET', 'POST'])
