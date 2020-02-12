@@ -343,9 +343,11 @@ def account():
 
             return redirect(url_for('account'))
         elif request.form.get('enable_alert'):
-            pass
+            dbm.change_alert_state(request.form.get('enable_alert'), 1)
+            return redirect(url_for('account'))
         elif request.form.get('disable_alert'):
-            pass
+            dbm.change_alert_state(request.form.get('disable_alert'), 0)
+            return redirect(url_for('account'))
         elif request.form.get('set_units'):
             print("Set Units")
 

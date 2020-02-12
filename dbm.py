@@ -180,6 +180,13 @@ def alert_exists(account_id, node_id, measurement, state, value):
         return False
 
 
+def change_alert_state(alert_id, enabled):
+    cursor.execute(
+        '''UPDATE alerts SET enabled = ? WHERE alert_id = ?''', (enabled, alert_id))
+
+    db_con.commit()
+
+
 def get_node_token_by_name(node_name):
     # Return the node token identified by node name
     db_con.row_factory = sqlite3.Row
