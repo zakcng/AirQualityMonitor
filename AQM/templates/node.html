@@ -216,11 +216,11 @@
 <!-- Plotly.js -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-@formatter:off
+<!-- @formatter:off -->
 <script type="text/javascript">
 var graphs = {{graph_json | safe}};
 Plotly.plot('chart',graphs,{});
 </script>
-//@formatter:on
+<!-- @formatter:on -->
 <script src="{{ url_for('static', filename='js/plot.js') }}"></script>
 {% endblock scripts %}
