@@ -105,9 +105,11 @@
                             {% if form.value.errors %}
                             {{ form.value(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.value.errors %}
-                                <span>{{ error }}</span>
-                                {% endfor %}
+                                {% if form.value.errors %}
+                                    {% for error in form.value.errors %}
+                                    <span>Enter a number value.</span>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                             {% else %}
                             {{ form.value(class="form-control form-control-lg") }}

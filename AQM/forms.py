@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, DecimalField
 from wtforms.validators import *
 
 
@@ -49,4 +49,4 @@ class PasswordForm(FlaskForm):
 
 
 class AlertForm(FlaskForm):
-    value = StringField('Value', validators=[DataRequired()])
+    value = DecimalField('Value', validators=[DataRequired()])
