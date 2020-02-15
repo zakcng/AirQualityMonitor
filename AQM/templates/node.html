@@ -29,31 +29,31 @@
                 </div>
                 <legend class="border-bottom mb-2">Latest Information</legend>
                 {% if last_node_record.temp is defined and last_node_record.temp %}
-                <p>Temperature: {{ last_node_record.temp }}</p>
+                <p>Temperature: {{ last_node_record.temp }}°C</p>
                 {% else %}
                 <p>Temperature: N/A</p>
                 {% endif %}
 
                 {% if last_node_record.humidity is defined and last_node_record.humidity %}
-                <p>Humidity: {{ last_node_record.humidity }}</p>
+                <p>Humidity: {{ last_node_record.humidity }}%</p>
                 {% else %}
                 <p>Humidity: N/A</p>
                 {% endif %}
 
                 {% if last_node_record.barometric_pressure is defined and last_node_record.barometric_pressure %}
-                <p>Barometric Pressure: {{ last_node_record.barometric_pressure }}</p>
+                <p>Barometric Pressure: {{ last_node_record.barometric_pressure }} hPa</p>
                 {% else %}
                 <p>Barometric Pressure: N/A</p>
                 {% endif %}
 
                 {% if last_node_record.pm_25 is defined and last_node_record.pm_25 %}
-                <p>PM2.5: {{ last_node_record.pm_25 }}</p>
+                <p>PM2.5: {{ last_node_record.pm_25 }} µg/m³</p>
                 {% else %}
                 <p>PM2.5: N/A</p>
                 {% endif %}
 
                 {% if last_node_record.pm_10 is defined and last_node_record.pm_10 %}
-                <p>PM10: {{ last_node_record.pm_10 }}</p>
+                <p>PM10: {{ last_node_record.pm_10 }} µg/m³</p>
                 {% else %}
                 <p>PM10: N/A</p>
                 {% endif %}
@@ -183,11 +183,11 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Date/Time</th>
-                            <th scope="col">Temperature</th>
-                            <th scope="col">Humidity</th>
-                            <th scope="col">Barometric Pressure</th>
-                            <th scope="col">PM2.5</th>
-                            <th scope="col">PM10</th>
+                            <th scope="col">Temperature (°C)</th>
+                            <th scope="col">Humidity (%)</th>
+                            <th scope="col">Barometric Pressure (hPa)</th>
+                            <th scope="col">PM2.5 (µg/m³)</th>
+                            <th scope="col">PM10 (µg/m³)</th>
                         </tr>
                         </thead>
                         {% for row in rows %}
