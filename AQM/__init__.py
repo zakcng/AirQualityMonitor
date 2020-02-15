@@ -150,7 +150,7 @@ def node(node_id):
                                     )
 
         # Plot
-        graph_json = plot(rows)
+        graph_json = plot(False)
 
         if request.method == "POST":
             if current_user.is_authenticated:
@@ -171,6 +171,53 @@ def node(node_id):
                                pagination=pagination, graph_json=graph_json)
     else:
         return redirect(url_for('index'))
+
+
+@app.route('/plot', methods=['GET', 'POST'])
+def plot(dynamic=True):
+    if dynamic:
+        measurement = int(request.args.get('measurement'))
+        print("DEBUG")
+        print(measurement)
+    else:
+        measurement = 0
+
+    def dynamic_json(rows, measurement):
+        rows = [dict(row) for row in rows]
+
+        print(rows)
+
+        df = pd.DataFrame(rows)
+        del df['id']  # Remove redundant record id
+
+        fig = go.Figure()
+
+        measurement_dict = {
+            0: ["temp", "Temperature"],
+            1: ["humidity", "Humidity"],
+            2: ["barometric_pressure", "Barometric Pressure"],
+            3: ["pm_25", "PM2.5"],
+            4: ["pm_10", "PM10"]
+        }
+
+        fig.add_trace(go.Scatter(x=df['time'], y=df[measurement_dict[measurement][0]]))
+        fig.update_layout(
+            xaxis_title="Time",
+            yaxis_title=measurement_dict[measurement][1],
+        )
+
+        graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        return graph_json
+
+    sql = "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC".format(
+        1)
+    g.cur.execute(sql)
+    rows = g.cur.fetchall()
+
+    graphJSON = dynamic_json(rows, measurement)
+
+    return graphJSON
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -450,27 +497,6 @@ def node_download(node_id):
     return r
 
 
-def plot(rows):
-    rows = [dict(row) for row in rows]
-
-    print(rows)
-
-    df = pd.DataFrame(rows)
-    del df['id']  # Remove redundant record id
-
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter(x=df['time'], y=df['temp']))
-    fig.update_layout(
-        xaxis_title="Time",
-        yaxis_title="Temperature",
-    )
-
-    graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return graph_json
-
-
 def generate_node_token():
     # Produces unique id according to RFC 4122
     return uuid.uuid4()
@@ -500,6 +526,7 @@ def get_pagination(**kwargs):
                       show_single_page=show_single_page_or_not(),
                       **kwargs
                       )
+
 
 
 if __name__ == '__main__':

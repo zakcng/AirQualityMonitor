@@ -5,6 +5,15 @@
         <div class="col-8">
             <div class="content-section">
                 <legend class="border-bottom mb-2">Graph</legend>
+                <div>
+                    <select class="form-control" id ='measurement'>
+                        <option value="0">Temperature</option>
+                        <option value="1">Humidity</option>
+                        <option value="2">Barometric Pressure</option>
+                        <option value="3">PM2.5</option>
+                        <option value="4">PM10</option>
+                    </select>
+                </div>
                 <div id="chart" class="chart">
                 </div>
             </div>
@@ -201,4 +210,5 @@
 var graphs = {{graph_json | safe}};
 Plotly.plot('chart',graphs,{});
 </script>
+<script src="{{ url_for('static', filename='js/plot.js') }}"></script>
 {% endblock scripts %}
