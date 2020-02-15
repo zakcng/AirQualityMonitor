@@ -2,7 +2,7 @@ from flask import Flask, render_template, flash, request, redirect, url_for, cur
 from flask_paginate import Pagination, get_page_args
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
-from AQM.forms import LoginForm, RegistrationForm, RegisterNode, EmailForm, PasswordForm
+from AQM.forms import LoginForm, RegistrationForm, RegisterNode, EmailForm, PasswordForm, AlertForm
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 # Util
@@ -124,6 +124,7 @@ def nodes():
 
 @app.route('/node/<int:node_id>', methods=['GET', 'POST'])
 def node(node_id):
+    form = AlertForm()
     node_exists = dbm.node_exists(node_id)
 
     if node_exists:
@@ -154,21 +155,22 @@ def node(node_id):
 
         if request.method == "POST":
             if current_user.is_authenticated:
-                alert = dbm.alert_exists(current_user.get_id(), node_id, request.form.get('measurement'),
+                if form.validate_on_submit():
+                    alert = dbm.alert_exists(current_user.get_id(), node_id, request.form.get('measurement'),
+                                             request.form.get('state'),
+                                             request.form.get('value'))
+
+                    if not alert:
+                        dbm.insert_alert(current_user.get_id(), node_id, request.form.get('measurement'),
                                          request.form.get('state'),
                                          request.form.get('value'))
-
-                if not alert:
-                    dbm.insert_alert(current_user.get_id(), node_id, request.form.get('measurement'),
-                                     request.form.get('state'),
-                                     request.form.get('value'))
-                    flash(f'• Successfully added alert!', 'success')
-                else:
-                    flash(f'• Alert already exists for this node!', 'danger')
+                        flash(f'• Successfully added alert!', 'success')
+                    else:
+                        flash(f'• Alert already exists for this node!', 'danger')
 
         return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows, page=page,
                                per_page=per_page,
-                               pagination=pagination, graph_json=graph_json)
+                               pagination=pagination, graph_json=graph_json, form=form)
     else:
         return redirect(url_for('index'))
 
@@ -177,15 +179,11 @@ def node(node_id):
 def plot(dynamic=True):
     if dynamic:
         measurement = int(request.args.get('measurement'))
-        print("DEBUG")
-        print(measurement)
     else:
         measurement = 0
 
     def dynamic_json(rows, measurement):
         rows = [dict(row) for row in rows]
-
-        print(rows)
 
         df = pd.DataFrame(rows)
         del df['id']  # Remove redundant record id
@@ -526,7 +524,6 @@ def get_pagination(**kwargs):
                       show_single_page=show_single_page_or_not(),
                       **kwargs
                       )
-
 
 
 if __name__ == '__main__':

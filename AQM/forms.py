@@ -46,3 +46,7 @@ class PasswordForm(FlaskForm):
                                      validators=[DataRequired(), EqualTo('password')])
 
     submit = SubmitField('Reset Password')
+
+
+class AlertForm(FlaskForm):
+    value = StringField('Value', validators=[DataRequired()])
