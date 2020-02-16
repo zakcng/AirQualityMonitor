@@ -64,7 +64,8 @@ def db_setup():
         user_type INTEGER NOT NULL,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE
+        email TEXT NOT NULL UNIQUE,
+        unit_preference INTEGER NOT NULL DEFAULT 0
     );
     '''
 
@@ -150,6 +151,14 @@ def change_user_pass(user_id, hashed_pass):
     # Changes the users password after a valid reset
     cursor.execute(
         '''UPDATE accounts SET password = ? WHERE account_id = ?''', (hashed_pass, user_id))
+
+    db_con.commit()
+
+
+def change_user_unit_preference(user_id, unit_preference):
+    # Changes the users unit preference
+    cursor.execute(
+        '''UPDATE accounts SET unit_preference = ? WHERE account_id = ?''', (unit_preference, user_id))
 
     db_con.commit()
 

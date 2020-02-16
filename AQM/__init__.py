@@ -21,7 +21,6 @@ import plotly.graph_objects as go
 import json
 import pandas as pd
 
-
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
@@ -332,6 +331,7 @@ def account():
 
     # Workaround for SQLite row not allowing assignment
     dict_rows = [dict(row) for row in alerts]
+
     # Convert back to human readable
 
     def get_alert_current_value(node_id, selector):
@@ -395,7 +395,9 @@ def account():
             dbm.change_alert_state(request.form.get('disable_alert'), 0)
             return redirect(url_for('account'))
         elif request.form.get('set_units'):
-            print("Set Units")
+            unit_type = request.form.get('unit_type')
+            dbm.change_user_unit_preference(current_user.get_id(), unit_type)
+            flash(f'• Updated unit preferences', 'success')
 
     return render_template('account.html', title='Account Management', alerts=dict_rows)
 
