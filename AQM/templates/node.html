@@ -29,7 +29,15 @@
                 </div>
                 <legend class="border-bottom mb-2">Latest Information</legend>
                 {% if last_node_record.temp is defined and last_node_record.temp %}
+                {% if current_user.is_authenticated %}
+                {% if current_user.get_unit_preference() == 0 %}
                 <p>Temperature: {{ last_node_record.temp }}°C</p>
+                {% elif current_user.get_unit_preference() == 1 %}
+                <p>Temperature: {{ last_node_record.temp }}°F</p>
+                {% endif %}
+                {% else %}
+                <p>Temperature: {{ last_node_record.temp }}°C</p>
+                {% endif %}
                 {% else %}
                 <p>Temperature: N/A</p>
                 {% endif %}
@@ -106,9 +114,9 @@
                             {{ form.value(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
                                 {% if form.value.errors %}
-                                    {% for error in form.value.errors %}
-                                    <span>Enter a number value.</span>
-                                    {% endfor %}
+                                {% for error in form.value.errors %}
+                                <span>Enter a number value.</span>
+                                {% endfor %}
                                 {% endif %}
                             </div>
                             {% else %}
@@ -183,7 +191,15 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Date/Time</th>
+                            {% if current_user.is_authenticated %}
+                            {% if current_user.get_unit_preference() == 0 %}
                             <th scope="col">Temperature (°C)</th>
+                            {% elif current_user.get_unit_preference() == 1 %}
+                            <th scope="col">Temperature (°F)</th>
+                            {% endif %}
+                            {% else %}
+                            <th scope="col">Temperature (°C)</th>
+                            {% endif %}
                             <th scope="col">Humidity (%)</th>
                             <th scope="col">Barometric Pressure (hPa)</th>
                             <th scope="col">PM2.5 (µg/m³)</th>
