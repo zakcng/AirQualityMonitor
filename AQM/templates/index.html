@@ -19,13 +19,13 @@
                             <th scope="col">Node</th>
                             <th scope="col">Date/Time</th>
                             {% if current_user.is_authenticated %}
-                                {% if current_user.get_unit_preference() == 0 %}
-                                <th scope="col">Temperature (°C)</th>
-                                {% elif current_user.get_unit_preference() == 1 %}
-                                <th scope="col">Temperature (°F)</th>
-                                {% endif %}
+                            {% if current_user.get_unit_preference() == 0 %}
+                            <th scope="col">Temperature (°C)</th>
+                            {% elif current_user.get_unit_preference() == 1 %}
+                            <th scope="col">Temperature (°F)</th>
+                            {% endif %}
                             {% else %}
-                                <th scope="col">Temperature (°C)</th>
+                            <th scope="col">Temperature (°C)</th>
                             {% endif %}
                             <th scope="col">Humidity (%)</th>
                             <th scope="col">Barometric Pressure (hPa)</th>
@@ -38,7 +38,15 @@
                             <td>{{ row[0] }}</td>
                             <td>{{ row[1] }}</td>
                             <td>{{ row[2][:-7]|replace("T", " ") }}</td>
+                            {% if current_user.is_authenticated %}
+                            {% if current_user.get_unit_preference() == 0 %}
                             <td>{{ row[3] }}</td>
+                            {% elif current_user.get_unit_preference() == 1 %}
+                            <td>{{ convert_temp_f(row[3]) }}</td>
+                            {% endif %}
+                            {% else %}
+                            <td>{{ row[3] }}</td>
+                            {% endif %}
                             <td>{{ row[4] }}</td>
                             <td>{{ row[5] }}</td>
                             <td>{{ row[6] }}</td>

@@ -498,6 +498,12 @@ def node_download(node_id):
     return r
 
 
+def convert_temp_f(c):
+    # Converts temperature from Celsius to Fahrenheit
+    result = c * (9/5) + 32
+    return "{0:.1f}".format(result)
+
+
 def generate_node_token():
     # Produces unique id according to RFC 4122
     return uuid.uuid4()
@@ -527,6 +533,10 @@ def get_pagination(**kwargs):
                       show_single_page=show_single_page_or_not(),
                       **kwargs
                       )
+
+
+# Jinja functions
+app.jinja_env.globals.update(convert_temp_f=convert_temp_f)
 
 
 if __name__ == '__main__':
