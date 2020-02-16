@@ -46,8 +46,7 @@ def teardown(error):
 def load_user(userid):
     try:
         user_record = dbm.return_user_by_id(userid)
-        for record in user_record:
-            print(record)
+
         user = User(user_record['account_id'], user_record['user_type'], user_record['unit_preference'],
                     user_record['username'], user_record['password'], user_record['email'])
         return user
@@ -67,7 +66,8 @@ def index():
     per_page = 5
     offset = (page - 1) * per_page
 
-    sql = 'select * from quality_records order by id desc limit {}, {}' \
+    sql = 'select id, name, time, temp, humidity, barometric_pressure, pm_25, pm_10 from quality_records INNER JOIN ' \
+          'nodes ON quality_records.node_id=nodes.node_id order by id desc  limit {}, {}' \
         .format(offset, per_page)
     g.cur.execute(sql)
     rows = g.cur.fetchall()
@@ -500,7 +500,7 @@ def node_download(node_id):
 
 def convert_temp_f(c):
     # Converts temperature from Celsius to Fahrenheit
-    result = c * (9/5) + 32
+    result = c * (9 / 5) + 32
     return "{0:.1f}".format(result)
 
 
@@ -537,7 +537,6 @@ def get_pagination(**kwargs):
 
 # Jinja functions
 app.jinja_env.globals.update(convert_temp_f=convert_temp_f)
-
 
 if __name__ == '__main__':
     dbm.db_exists()
