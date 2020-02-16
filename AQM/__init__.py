@@ -47,8 +47,10 @@ def teardown(error):
 def load_user(userid):
     try:
         user_record = dbm.return_user_by_id(userid)
-        user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
-                    user_record['password'], user_record['email'])
+        for record in user_record:
+            print(record)
+        user = User(user_record['account_id'], user_record['user_type'], user_record['unit_preference'],
+                    user_record['username'], user_record['password'], user_record['email'])
         return user
     except AttributeError:
         # Attempt to fix an issue with an deleted database and an active user session
@@ -226,8 +228,8 @@ def login():
         if form.validate_on_submit():
             user_record = dbm.return_user_by_username(form.username.data)
             if user_record and bcrypt.check_password_hash(user_record['password'], form.password.data):
-                user = User(user_record['account_id'], user_record['user_type'], user_record['username'],
-                            user_record['password'], user_record['email'])
+                user = User(user_record['account_id'], user_record['user_type'], user_record['unit_preference'],
+                            user_record['username'], user_record['password'], user_record['email'])
 
                 login_user(user)
                 return redirect(url_for('index'))

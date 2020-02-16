@@ -18,7 +18,11 @@
                             <th scope="col">#</th>
                             <th scope="col">Node</th>
                             <th scope="col">Date/Time</th>
+                            {% if current_user.get_unit_preference() == 0 %}
                             <th scope="col">Temperature (°C)</th>
+                            {% elif current_user.get_unit_preference() == 1 %}
+                            <th scope="col">Temperature (°F)</th>
+                            {% endif %}
                             <th scope="col">Humidity (%)</th>
                             <th scope="col">Barometric Pressure (hPa)</th>
                             <th scope="col">PM2.5 (µg/m³)</th>

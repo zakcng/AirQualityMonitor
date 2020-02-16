@@ -5,9 +5,10 @@ import dbm
 
 
 class User(UserMixin):
-    def __init__(self, account_id, user_type, username, password, email, active=True):
+    def __init__(self, account_id, user_type, unit_preference, username, password, email, active=True):
         self.account_id = account_id
         self.user_type = user_type
+        self.unit_preference = unit_preference
         self.username = username
         self.password = password
         self.email = email
@@ -27,6 +28,9 @@ class User(UserMixin):
 
     def get_user_type(self):
         return self.user_type
+
+    def get_unit_preference(self):
+        return self.unit_preference
 
     def get_reset_token(self, expires=3600):
         s = Serializer(app.config['SECRET_KEY'], expires)
