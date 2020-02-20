@@ -11,8 +11,8 @@ selector = selectors.DefaultSelector()
 
 def get_temp():
     if emulate:
-        #temp = (random.randint(19, 32))
-        temp = 23
+        temp = (random.randint(20, 23))
+        #temp = 21
         return temp
     else:
         temp = round(sense.get_temperature(), 2)

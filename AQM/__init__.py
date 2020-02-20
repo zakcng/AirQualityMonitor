@@ -344,6 +344,8 @@ def account():
         # 1 Red
         # 2 Warning
 
+        print(alert['value'], alert['state'], alert['latest_value'])
+
         if value == latest_value:
             if state == '==':
                 return 0
@@ -356,9 +358,9 @@ def account():
         comp = ops[state](latest_value, value)
 
         if comp:
-            return 0
-        elif not comp:
             return 1
+        elif not comp:
+            return 0
 
     for alert in dict_rows:
         if alert['measurement'] == 0:
