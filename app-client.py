@@ -10,7 +10,8 @@ selector = selectors.DefaultSelector()
 
 
 def get_sds011():
-    return 0
+    serial_device = glob.glob("/dev/ttyUSB*")[0]
+    return serial_device
 
 
 def get_temp():
@@ -39,22 +40,20 @@ def get_barometric_pressure():
         return pressure
 
 
-def get_pm_25():
+def get_particulate_matter():
     if emulate:
-        return 9
+        return 9, 11
     else:
-        return 9
-
-
-def get_pm_10():
-    if emulate:
-        return 11.1
-    else:
-        return 9
+        sds011.sleep(sleep=False)
+        time.sleep(30)
+        pm_readings = sds011.query()
+        sds011.sleep()
+        return pm_readings
 
 
 def package_data(token):
-    data = [token, get_temp(), get_humidity(), get_barometric_pressure(), get_pm_25(), get_pm_10()]
+    pm_readings = get_particulate_matter()
+    data = [token, get_temp(), get_humidity(), get_barometric_pressure(), pm_readings[0], pm_readings[1]]
     return data
 
 
@@ -80,7 +79,6 @@ def service_connection(key, mask):
     if mask & selectors.EVENT_WRITE:
         if not data.outb:
             data.outb = pickle.dumps(node_data)
-            # data.outb = "Test".encode()
         if data.outb:
             print('Sending {} to {}'.format(repr(data.outb), host))
             sent = sock.send(data.outb)
@@ -117,16 +115,17 @@ if __name__ == '__main__':
     if not emulate:
         from sense_hat import SenseHat
         import glob
-        import sds011
+        from SDS011 import SDS011
 
         sense = SenseHat()
+
         # Detect SDS011 on Raspberry Pi.
         usb = get_sds011()
-
+        sds011 = SDS011(usb, use_query_mode=True)
 
     start_time = time.time()
     while True:
         node_data = package_data(token)
-
-        send_data(host, port)
+        print(node_data)
+        # send_data(host, port)
         time.sleep(TICK_RATE - ((time.time() - start_time) % TICK_RATE))
