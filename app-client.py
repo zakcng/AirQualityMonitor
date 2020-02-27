@@ -9,10 +9,14 @@ import argparse
 selector = selectors.DefaultSelector()
 
 
+def get_sds011():
+    return 0
+
+
 def get_temp():
     if emulate:
-        temp = (random.randint(20, 23))
-        #temp = 21
+        #temp = (random.randint(20, 23))
+        temp = 23
         return temp
     else:
         temp = round(sense.get_temperature(), 2)
@@ -112,8 +116,13 @@ if __name__ == '__main__':
 
     if not emulate:
         from sense_hat import SenseHat
+        import glob
+        import sds011
 
         sense = SenseHat()
+        # Detect SDS011 on Raspberry Pi.
+        usb = get_sds011()
+
 
     start_time = time.time()
     while True:
