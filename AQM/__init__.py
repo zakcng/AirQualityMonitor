@@ -151,22 +151,25 @@ def node(node_id):
                                     format_total=True,
                                     format_number=True,
                                     )
+        # If data exists - not a new node
+        graph_json = None
+        css = None
+        if rows:
+            # Plot
+            graph_json = plot(False)
 
-        # Plot
-        graph_json = plot(False)
+            # AQI calculation
+            # Takes maximum of 24 hours of particulate matter results and processes them to find the AQI index.
+            css = {}
 
-        # AQI calculation
-        # Takes maximum of 24 hours of particulate matter results and processes them to find the AQI index.
-        css = {}
-
-        pm_data_24 = dbm.return_pm_data_24_hours_by_node_id(node_id)
-        aqi_index = get_aqi_index(pm_data_24)
-        css['box'+str(aqi_index)] = '''
-        margin-top: .1em;
-        height: 20px;
-        width: 20px;
-        border: 1.5px solid black;
-        '''
+            pm_data_24 = dbm.return_pm_data_24_hours_by_node_id(node_id)
+            aqi_index = get_aqi_index(pm_data_24)
+            css['box'+str(aqi_index)] = '''
+            margin-top: .1em;
+            height: 20px;
+            width: 20px;
+            border: 1.5px solid black;
+            '''
 
         if request.method == "POST":
             if current_user.is_authenticated:

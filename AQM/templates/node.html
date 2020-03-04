@@ -67,6 +67,7 @@
                 {% endif %}
                 <legend class="border-bottom mb-2">Air Quality Index (AQI)</legend>
                 <div class="row mb-2 justify-content-center">
+                    {% if css is defined and css is not none %}
                     <div class="color-box box1" style="{{ css.box1 }}"></div>
                     <div class="color-box box2" style="{{ css.box2 }}"></div>
                     <div class="color-box box3" style="{{ css.box3 }}"></div>
@@ -77,6 +78,9 @@
                     <div class="color-box box8" style="{{ css.box8 }}"></div>
                     <div class="color-box box9" style="{{ css.box9 }}"></div>
                     <div class="color-box box10" style="{{ css.box10 }}"></div>
+                    {% else %}
+                    <p>N/A</p>
+                    {% endif %}
                 </div>
                 <legend class="border-bottom mb-3"></legend>
                 <div class="row pl-3 mb-2">
