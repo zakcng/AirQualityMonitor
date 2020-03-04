@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-8">
-            <div class="content-section">
+            <div class="content-section d-none d-lg-block">
                 <legend class="border-bottom mb-2">Graph</legend>
                 <div>
                     <select class="form-control" id='measurement'>
@@ -55,7 +55,7 @@
                 {% endif %}
 
                 {% if last_node_record.pm_25 is defined and last_node_record.pm_25 %}
-                <p>PM2.5: {{ last_node_record.pm_25 }} µg/m³</p>
+                <p>PM2.5: {{ last_node_record.pm_25 }} µg/m</p>
                 {% else %}
                 <p>PM2.5: N/A</p>
                 {% endif %}
@@ -65,6 +65,19 @@
                 {% else %}
                 <p>PM10: N/A</p>
                 {% endif %}
+                <legend class="border-bottom mb-2">Air Quality Index (AQI)</legend>
+                <div class="row pl-3 mb-2 justify-content-center">
+                    <div class="color-box box1" style=""></div>
+                    <div class="color-box box2" style=""></div>
+                    <div class="color-box box3" style=""></div>
+                    <div class="color-box box4" style=""></div>
+                    <div class="color-box box5" style=""></div>
+                    <div class="color-box box6" style=""></div>
+                    <div class="color-box box7" style=""></div>
+                    <div class="color-box box8" style=""></div>
+                    <div class="color-box box9" style=""></div>
+                    <div class="color-box box10" style=""></div>
+                </div>
                 <legend class="border-bottom mb-3"></legend>
                 <div class="row pl-3 mb-2">
                     <form action="{{ url_for('node_download', node_id=node.node_id) }}" method="POST">
@@ -217,7 +230,7 @@
                             <td>{{ convert_temp_f(row[2]) }}</td>
                             {% endif %}
                             {% else %}
-                              <td>{{ convert_temp_f(row[2]) }}</td>
+                            <td>{{ convert_temp_f(row[2]) }}</td>
                             {% endif %}
                             <td>{{ row[3] }}</td>
                             <td>{{ row[4] }}</td>

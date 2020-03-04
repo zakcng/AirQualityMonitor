@@ -32,6 +32,10 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 20px;
 }
 
+input.btn.btn-secondary {
+    white-space:normal
+}
+
 button.btn-dgr.btn.btn-outline-info:hover {
     color: #fff;
     background-color: #dc3545;
@@ -68,4 +72,62 @@ a.unlink:hover {
 
 .opaque {
     opacity: 0.6;
+}
+
+.color-box {
+    width: 12px;
+    height: 12px;
+    display: flex;
+    margin-left: .5em;
+    margin-top: .5em;
+    background-color: black;
+    border: 1px solid black;
+}
+
+.box1 {
+    background-color: #9cff9c;
+}
+
+.box2 {
+    background-color: #31ff00;
+}
+
+.box3 {
+    margin-top: .1em;
+    height: 20px;
+    width: 20px;
+    border: 1.5px solid black;
+    background-color: #31cf00;
+}
+
+.box4 {
+    background-color: #ff0;
+}
+
+.box5 {
+    background-color: #ffcf00;
+}
+
+.box6 {
+    background-color: #ff9a00;
+}
+
+.box7 {
+    background-color: #ff6464;
+}
+
+.box8 {
+    background-color: red;
+}
+
+.box9 {
+    background-color: #900;
+}
+
+.box10 {
+    background-color: #ce30ff;
+}
+
+legend.border-bottom.mb-2 {
+    box-sizing: border-box;
 }
