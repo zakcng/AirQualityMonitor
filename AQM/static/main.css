@@ -127,3 +127,7 @@ a.unlink:hover {
 legend.border-bottom.mb-2 {
     box-sizing: border-box;
 }
+
+body > div.container > div:nth-child(1) > div.col-4 > div > p {
+    margin-bottom: 0.6em;
+}

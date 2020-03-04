@@ -156,6 +156,7 @@ def node(node_id):
         graph_json = plot(False)
 
         # AQI calculation
+        # Takes maximum of 24 hours of particulate matter results and processes them to find the AQI index.
         css = {}
 
         pm_data_24 = dbm.return_pm_data_24_hours_by_node_id(node_id)
@@ -535,7 +536,6 @@ def get_aqi_index(pm_data_24):
                 return k
         return 10
 
-    # Takes maximum of 24 hours of particulate matter results and processes them to find the AQI index.
     pm_data_24 = [dict(row) for row in pm_data_24]
 
     pm_25_list = []
@@ -546,17 +546,23 @@ def get_aqi_index(pm_data_24):
     for item in pm_data_24:
         pm_10_list.append(item.get('pm_10'))
 
-    pm_25_mean = statistics.mean(pm_25_list)
-    pm_10_mean = statistics.mean(pm_10_list)
+    pm_25_mean = int(statistics.mean(pm_25_list))
+    pm_10_mean = int(statistics.mean(pm_10_list))
 
     if pm_25_mean >= pm_10_mean:
         pm25_limits = air_measurements.pm25_limits
 
-        return find_range_key(pm25_limits, pm_25_mean)
+        aqi_index = find_range_key(pm25_limits, pm_25_mean)
+
+        print("PM_25 mean: " + str(pm_25_mean) + " AQI: " + str(aqi_index))
+        return aqi_index
     elif pm_10_mean > pm_25_mean:
         pm10_limits = air_measurements.pm10_limits
 
-        return find_range_key(pm10_limits, pm_10_mean)
+        aqi_index = find_range_key(pm10_limits, pm_10_mean)
+
+        print("PM_10 mean: " + str(pm_10_mean) + " AQI: " + str(aqi_index))
+        return aqi_index
 
 
 def get_css_framework():

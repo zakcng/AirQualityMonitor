@@ -42,7 +42,7 @@ def get_barometric_pressure():
 
 def get_particulate_matter():
     if emulate:
-        return 24, 11
+        return 99, 11
     else:
         sds011.sleep(sleep=False)
         time.sleep(30)
