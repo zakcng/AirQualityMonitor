@@ -210,10 +210,14 @@
                         <tr>
                             <td>{{ row[0] }}</td>
                             <td>{{ row[1][:-7]|replace("T", " ") }}</td>
+                            {% if current_user.is_authenticated %}
                             {% if current_user.get_unit_preference() == 0 %}
                             <td>{{ row[2] }}</td>
                             {% elif current_user.get_unit_preference() == 1 %}
                             <td>{{ convert_temp_f(row[2]) }}</td>
+                            {% endif %}
+                            {% else %}
+                              <td>{{ convert_temp_f(row[2]) }}</td>
                             {% endif %}
                             <td>{{ row[3] }}</td>
                             <td>{{ row[4] }}</td>
