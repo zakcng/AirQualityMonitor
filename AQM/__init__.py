@@ -417,8 +417,11 @@ def account():
             return redirect(url_for('account'))
         elif request.form.get('set_units'):
             unit_type = request.form.get('unit_type')
-            dbm.change_user_unit_preference(current_user.get_id(), unit_type)
-            flash(f'• Updated unit preferences', 'success')
+            if unit_type != "Select Units:":
+                dbm.change_user_unit_preference(current_user.get_id(), unit_type)
+                flash(f'• Updated unit preferences', 'success')
+            else:
+                flash(f'• Please select unit preferences', 'danger')
 
     return render_template('account.html', title='Account Management', alerts=dict_rows)
 
