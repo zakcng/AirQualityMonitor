@@ -549,20 +549,18 @@ def get_aqi_index(pm_data_24):
     pm_25_mean = int(statistics.mean(pm_25_list))
     pm_10_mean = int(statistics.mean(pm_10_list))
 
-    if pm_25_mean >= pm_10_mean:
-        pm25_limits = air_measurements.pm25_limits
+    pm25_limits = air_measurements.pm25_limits
+    pm_25_aqi_index = find_range_key(pm25_limits, pm_25_mean)
 
-        aqi_index = find_range_key(pm25_limits, pm_25_mean)
+    pm10_limits = air_measurements.pm10_limits
+    pm_10_aqi_index = find_range_key(pm10_limits, pm_10_mean)
 
-        print("PM_25 mean: " + str(pm_25_mean) + " AQI: " + str(aqi_index))
-        return aqi_index
-    elif pm_10_mean > pm_25_mean:
-        pm10_limits = air_measurements.pm10_limits
-
-        aqi_index = find_range_key(pm10_limits, pm_10_mean)
-
-        print("PM_10 mean: " + str(pm_10_mean) + " AQI: " + str(aqi_index))
-        return aqi_index
+    if pm_25_aqi_index >= pm_10_aqi_index:
+        print("PM mean: " + str(pm_25_mean) + " AQI: " + str(pm_25_aqi_index))
+        return pm_25_aqi_index
+    elif pm_10_aqi_index > pm_25_aqi_index:
+        print("PM mean: " + str(pm_10_mean) + " AQI: " + str(pm_10_aqi_index))
+        return pm_10_aqi_index
 
 
 def get_css_framework():

@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 input.btn.btn-secondary {
-    white-space:normal
+    white-space: normal
 }
 
 button.btn-dgr.btn.btn-outline-info:hover {
@@ -130,4 +130,9 @@ legend.border-bottom.mb-2 {
 
 body > div.container > div:nth-child(1) > div.col-4 > div > p {
     margin-bottom: 0.6em;
+}
+
+.text-close > p {
+    margin: 0;
+    padding: 0;
 }
