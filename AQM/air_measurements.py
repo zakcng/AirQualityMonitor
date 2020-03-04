@@ -22,9 +22,9 @@ PM2.5
 https://uk-air.defra.gov.uk/air-pollution/daqi?view=more-info&pollutant=pm25#pollutant
 """
 pm25_limits = {
-    '1': [0, 16],
+    '1': [0, 11],
     '2': [12, 23],
-    '3': [23, 35],
+    '3': [24, 35],
     '4': [36, 41],
     '5': [42, 47],
     '6': [48, 53],

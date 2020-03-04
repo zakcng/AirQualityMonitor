@@ -42,7 +42,7 @@ def get_barometric_pressure():
 
 def get_particulate_matter():
     if emulate:
-        return 9, 11
+        return 24, 11
     else:
         sds011.sleep(sleep=False)
         time.sleep(30)
@@ -127,5 +127,5 @@ if __name__ == '__main__':
     while True:
         node_data = package_data(token)
         print(node_data)
-        # send_data(host, port)
+        send_data(host, port)
         time.sleep(TICK_RATE - ((time.time() - start_time) % TICK_RATE))

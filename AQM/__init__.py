@@ -11,6 +11,8 @@ import time
 import os
 import operator
 import uuid
+import statistics
+from AQM import air_measurements
 # Database
 import dbm
 import sqlite3
@@ -153,6 +155,18 @@ def node(node_id):
         # Plot
         graph_json = plot(False)
 
+        # AQI calculation
+        css = {}
+
+        pm_data_24 = dbm.return_pm_data_24_hours_by_node_id(node_id)
+        aqi_index = get_aqi_index(pm_data_24)
+        css['box'+str(aqi_index)] = '''
+        margin-top: .1em;
+        height: 20px;
+        width: 20px;
+        border: 1.5px solid black;
+        '''
+
         if request.method == "POST":
             if current_user.is_authenticated:
                 if form.validate_on_submit():
@@ -170,7 +184,7 @@ def node(node_id):
 
         return render_template('node.html', node=node, last_node_record=last_node_record, rows=rows, page=page,
                                per_page=per_page,
-                               pagination=pagination, graph_json=graph_json, form=form)
+                               pagination=pagination, graph_json=graph_json, form=form, css=css)
     else:
         return redirect(url_for('index'))
 
@@ -509,6 +523,40 @@ def convert_temp_f(c):
 def generate_node_token():
     # Produces unique id according to RFC 4122
     return uuid.uuid4()
+
+
+def get_aqi_index(pm_data_24):
+    def find_range_key(d, x):
+        for k, v in d.items():
+            if None not in v:
+                if x in range(v[0], v[1] + 1):
+                    return k
+            elif x in v:
+                return k
+        return 10
+
+    # Takes maximum of 24 hours of particulate matter results and processes them to find the AQI index.
+    pm_data_24 = [dict(row) for row in pm_data_24]
+
+    pm_25_list = []
+    for item in pm_data_24:
+        pm_25_list.append(item.get('pm_25'))
+
+    pm_10_list = []
+    for item in pm_data_24:
+        pm_10_list.append(item.get('pm_10'))
+
+    pm_25_mean = statistics.mean(pm_25_list)
+    pm_10_mean = statistics.mean(pm_10_list)
+
+    if pm_25_mean >= pm_10_mean:
+        pm25_limits = air_measurements.pm25_limits
+
+        return find_range_key(pm25_limits, pm_25_mean)
+    elif pm_10_mean > pm_25_mean:
+        pm10_limits = air_measurements.pm10_limits
+
+        return find_range_key(pm10_limits, pm_10_mean)
 
 
 def get_css_framework():

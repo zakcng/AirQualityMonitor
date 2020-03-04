@@ -396,6 +396,23 @@ def return_latest_quality_record_by_node_id(node_id):
         return None
 
 
+def return_pm_data_24_hours_by_node_id(node_id):
+    # Return the node name of records_submitted within 5 minutes
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+
+    cust_cursor.execute(
+        "SELECT node_id,pm_25,pm_10 FROM quality_records WHERE datetime(time) >=datetime('now', '-1 Day') AND node_id=?"
+        , (node_id,))
+
+    records = cust_cursor.fetchall()
+
+    if records:
+        return records
+    else:
+        return None
+
+
 def return_all_quality_records_by_node_id(node_id):
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
