@@ -449,8 +449,8 @@ def admin_cp():
                     flash('• Node creation unsuccessful. Please check name and location', 'danger')
             elif request.form.get('remove_user'):
                 username = request.form.get('account_name')
-
-                if username is not "Select user:":
+                print(username)
+                if username != "Select user:":
                     dbm.remove_user_by_name(username)
                     flash(f'• Removed user {username} successfully', 'success')
                 else:
