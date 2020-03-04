@@ -498,27 +498,31 @@ def node_download(node_id):
     records = dbm.return_all_quality_records_by_node_id(node_id)
     create_time = time.time()
 
-    path = app.config['SERVE'] + os.path.sep + str(node_name) + '-' + str(create_time)
-    filename = "%s-%s.csv" % (str(node_name), str(create_time))
+    if records:
+        path = app.config['SERVE'] + os.path.sep + str(node_name) + '-' + str(create_time)
+        filename = "%s-%s.csv" % (str(node_name), str(create_time))
 
-    with open(path, 'w') as file:
-        file.write(init_row + "\n")
+        with open(path, 'w') as file:
+            file.write(init_row + "\n")
 
-    with open(path, 'a', newline='') as file:
-        writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for row in records:
-            writer.writerow(row)
+        with open(path, 'a', newline='') as file:
+            writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            for row in records:
+                writer.writerow(row)
 
-    def generate():
-        with open(path) as f:
-            yield from f
+        def generate():
+            with open(path) as f:
+                yield from f
 
-        os.remove(path)
+            os.remove(path)
 
-    r = current_app.response_class(generate(), mimetype='text/csv')
-    r.headers.set('Content-Disposition', 'attachment', filename=filename)
+        r = current_app.response_class(generate(), mimetype='text/csv')
+        r.headers.set('Content-Disposition', 'attachment', filename=filename)
 
-    return r
+        return r
+    else:
+        flash(f'• No data is associated with this node currently', 'danger')
+        return redirect(request.referrer)
 
 
 def convert_temp_f(c):
