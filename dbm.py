@@ -6,10 +6,9 @@ https://stackoverflow.com/questions/2854011/get-a-list-of-field-values-from-pyth
 
 import os
 import sqlite3
-from AQM import server_config
 
 # Default path for db file
-db_path = server_config.db_path
+db_path = None
 
 # Create globals
 db_con = None
@@ -447,7 +446,3 @@ def db_execute(sql_query):
     db_con.commit()
 
     return cursor.fetchall()
-
-
-if __name__ == '__main__':
-    db_exists()

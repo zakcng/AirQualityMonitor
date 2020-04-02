@@ -23,6 +23,11 @@ import json
 import pandas as pd
 
 app = Flask(__name__)
+# Database config
+dbm.db_path = "database.sqlite3"
+dbm.db_exists()
+# App config
+app.config['DATABASE'] = dbm.db_path
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
 app.config['SERVE'] = os.getcwd()
@@ -33,7 +38,7 @@ from AQM.models import User
 
 @app.before_request
 def before_request():
-    g.conn = sqlite3.connect('database.sqlite3')
+    g.conn = sqlite3.connect(app.config['DATABASE'])
     g.conn.row_factory = sqlite3.Row
     g.cur = g.conn.cursor()
 
