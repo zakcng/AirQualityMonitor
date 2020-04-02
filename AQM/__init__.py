@@ -163,13 +163,18 @@ def node(node_id):
             css = {}
 
             pm_data_24 = dbm.return_pm_data_24_hours_by_node_id(node_id)
-            aqi_index = get_aqi_index(pm_data_24)
-            css['box'+str(aqi_index)] = '''
-            margin-top: .1em;
-            height: 20px;
-            width: 20px;
-            border: 1.5px solid black;
-            '''
+            if pm_data_24:
+                # PM data recorded in the last 24 hours.
+                aqi_index = get_aqi_index(pm_data_24)
+
+                css['box' + str(aqi_index)] = '''
+                           margin-top: .1em;
+                           height: 20px;
+                           width: 20px;
+                           border: 1.5px solid black;
+                           '''
+            else:
+                pass
 
         if request.method == "POST":
             if current_user.is_authenticated:
@@ -545,7 +550,7 @@ def get_aqi_index(pm_data_24):
             elif x in v:
                 return k
         return 10
-
+    print(pm_data_24)
     pm_data_24 = [dict(row) for row in pm_data_24]
 
     pm_25_list = []
@@ -565,10 +570,10 @@ def get_aqi_index(pm_data_24):
     pm10_limits = air_measurements.pm10_limits
     pm_10_aqi_index = find_range_key(pm10_limits, pm_10_mean)
 
-    if pm_25_aqi_index >= pm_10_aqi_index:
+    if int(pm_25_aqi_index) >= int(pm_10_aqi_index):
         print("PM mean: " + str(pm_25_mean) + " AQI: " + str(pm_25_aqi_index))
         return pm_25_aqi_index
-    elif pm_10_aqi_index > pm_25_aqi_index:
+    elif int(pm_10_aqi_index) > int(pm_25_aqi_index):
         print("PM mean: " + str(pm_10_mean) + " AQI: " + str(pm_10_aqi_index))
         return pm_10_aqi_index
 

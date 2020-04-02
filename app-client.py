@@ -42,7 +42,7 @@ def get_barometric_pressure():
 
 def get_particulate_matter():
     if emulate:
-        return 51, 51
+        return 100, 100
     else:
         sds011.sleep(sleep=False)
         time.sleep(30)
@@ -106,8 +106,8 @@ if __name__ == '__main__':
     print("Emulate: " + str(emulate))
 
     # Arguments
-    host = '127.0.0.1'
-    # host = '169.254.58.5'
+    #host = '127.0.0.1'
+    host = '169.254.58.5'
     port = 12345
     BUFFER_SIZE = 1024
     TICK_RATE = 60
