@@ -22,12 +22,11 @@ def db_exists():
     # Determine if database needs creating
     if os.path.exists(db_path):
         db_con = sqlite3.connect(db_path, check_same_thread=False)
-        db_con.set_trace_callback(print)
         cursor = db_con.cursor()
         return True
     else:
         # Create globals
-        db_con = sqlite3.connect(db_path)
+        db_con = sqlite3.connect(db_path, check_same_thread=False)
         cursor = db_con.cursor()
         db_setup()
         return False
@@ -97,6 +96,24 @@ def db_setup():
 
     # Commit changes
     db_con.commit()
+
+
+def drop_all():
+    # Drop all tables used during testing
+    cursor.execute('DELETE FROM quality_records')
+    cursor.execute('DELETE FROM nodes')
+    cursor.execute('DELETE FROM accounts')
+    cursor.execute('DELETE FROM alerts')
+
+    db_con.commit()
+
+
+def set_debug(b=True):
+    if b:
+        db_con.set_trace_callback(print)
+    else:
+        db_con.set_trace_callback(False)
+
 
 
 def insert_quality_record(node_data, dt):

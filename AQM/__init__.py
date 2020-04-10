@@ -23,17 +23,20 @@ import json
 import pandas as pd
 
 app = Flask(__name__)
-# Database config
-dbm.db_path = "database.sqlite3"
-dbm.db_exists()
 # App config
-app.config['DATABASE'] = dbm.db_path
+app.config['DATABASE'] = "database.sqlite3"
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = '132dec296c809a27ef4433940f343108'
 app.config['SERVE'] = os.getcwd()
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 from AQM.models import User
+
+
+@app.before_first_request
+def before_first_request():
+    dbm.db_path = app.config['DATABASE']
+    dbm.db_exists()
 
 
 @app.before_request
@@ -613,5 +616,4 @@ def get_pagination(**kwargs):
 app.jinja_env.globals.update(convert_temp_f=convert_temp_f)
 
 if __name__ == '__main__':
-    dbm.db_exists()
     app.run(debug=True)
