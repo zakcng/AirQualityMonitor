@@ -115,7 +115,6 @@ def set_debug(b=True):
         db_con.set_trace_callback(False)
 
 
-
 def insert_quality_record(node_data, dt):
     # Calculate node id from token
     token = str(node_data[0])
@@ -135,11 +134,11 @@ def insert_node(nodeName, nodeLocation, nodeToken):
     db_con.commit()
 
 
-def insert_user(username, password, email):
-    # Creates a standard permission user account
+def insert_user(username, password, email, user_type=1):
+    # Insert a user into the database default user type is standard user
     cursor.execute(
-        '''INSERT INTO accounts(account_id, user_type, username, password, email) VALUES(null,1,?,?,?)''', (
-            str(username), str(password), str(email)))
+        '''INSERT INTO accounts(account_id, user_type, username, password, email) VALUES(null,?,?,?,?)''',
+        (str(user_type), str(username), str(password), str(email)))
 
     db_con.commit()
 
