@@ -273,6 +273,17 @@ def get_node_id_by_token(token):
         return None
 
 
+def get_node_id_by_name(name):
+    # Calculate node id from name
+    find_node_sql = cursor.execute("SELECT * FROM nodes WHERE name=?", (name,)).fetchone()
+    name = find_node_sql[0]
+
+    if name:
+        return name
+    else:
+        return None
+
+
 def get_node_name_by_id(node_id):
     # Return the node name identified by node id
     db_con.row_factory = sqlite3.Row

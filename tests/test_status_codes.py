@@ -28,8 +28,7 @@ class TestStatusCodes(FlaskTestCase):
         """
         Test status code of admin control panel.
         """
-        self.register_admin(username="admin", email="admin@admin.com",
-                            password="$2b$12$yZNLO93MQ9E1bkCdkowVLe3C/0SieARNigJFZ/0d85buWJ.M5om6m")
+        self.register_admin()
 
         response = self.login("admin", "admin")
         self.assertEqual(response.status_code, 200)
@@ -54,11 +53,16 @@ class TestStatusCodes(FlaskTestCase):
     def test_admin_control_panel_status_code_negative_no_login(self):
         """
         Test status code of admin control panel without logging in.
+        Expected result: 401 Unauthorized
         """
         response = self.app.get('/admin-cp', follow_redirects=True)
         self.assertEqual(response.status_code, 401)
 
     # User view
     def test_account_management_status_code_negative_no_login(self):
+        """
+        Test status code of account page without logging in.
+        Expected result: 401 Unauthorized
+        """
         response = self.app.get('/account', follow_redirects=True)
         self.assertEqual(response.status_code, 401)

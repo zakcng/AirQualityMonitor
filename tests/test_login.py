@@ -3,7 +3,7 @@ from tests.template_test import FlaskTestCase
 
 class TestLogin(FlaskTestCase):
     # Login Tests
-    def test_positive_login(self):
+    def test_positive_user_login(self):
         response = self.register('test', 'test@test.com', 'test', 'test')
         self.assertEqual(response.status_code, 200)
 
@@ -13,7 +13,7 @@ class TestLogin(FlaskTestCase):
         response = self.login("test", "test")
         self.assertIn(b'Account', response.data)
 
-    def test_false_login(self):
+    def test_false_user_login(self):
         response = self.app.get('/login', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         

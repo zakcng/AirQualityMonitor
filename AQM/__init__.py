@@ -457,7 +457,7 @@ def admin_cp():
 
                     dbm.insert_node(nodeName, nodeLocation, nodeToken)
 
-                    flash(f'• Node created', 'success')
+                    flash(f'• Node {nodeName} created', 'success')
                     flash(f'• Use the following token to register the node: {nodeToken}', 'info')
 
                     return redirect(url_for('admin_cp'))
