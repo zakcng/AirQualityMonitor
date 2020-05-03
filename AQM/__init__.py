@@ -135,7 +135,7 @@ def nodes():
 @app.route('/node/<int:node_id>', methods=['GET', 'POST'])
 def node(node_id):
     form = AlertForm()
-    node_exists = dbm.node_exists(node_id)
+    node_exists = dbm.node_exists_by_id(node_id)
 
     if node_exists:
         node = dbm.return_node_by_id(node_id)
@@ -451,18 +451,24 @@ def admin_cp():
         if request.method == "POST":
             if register_node_form.nodeAdd.data:
                 if register_node_form.validate_on_submit():
+                    # Check node doesn't exist
                     nodeName = register_node_form.nodeName.data
-                    nodeLocation = register_node_form.nodeLocation.data
-                    nodeToken = generate_node_token()
+                    node_exists = dbm.node_exists_by_name(nodeName)
 
-                    dbm.insert_node(nodeName, nodeLocation, nodeToken)
+                    if not node_exists:
+                        nodeLocation = register_node_form.nodeLocation.data
+                        nodeToken = generate_node_token()
 
-                    flash(f'• Node {nodeName} created', 'success')
-                    flash(f'• Use the following token to register the node: {nodeToken}', 'info')
+                        dbm.insert_node(nodeName, nodeLocation, nodeToken)
 
-                    return redirect(url_for('admin_cp'))
+                        flash(f'• Node {nodeName} created', 'success')
+                        flash(f'• Use the following token to register the node: {nodeToken}', 'info')
+
+                        return redirect(url_for('admin_cp'))
+                    else:
+                        flash('• Node creation unsuccessful - Duplicate node name provided', 'danger')
                 else:
-                    flash('• Node creation unsuccessful. Please check name and location', 'danger')
+                    flash('• Node creation unsuccessful - Please check name and location', 'danger')
             elif request.form.get('remove_user'):
                 username = request.form.get('account_name')
                 print(username)

@@ -7,7 +7,6 @@ import dbm
 class FlaskTestCase(unittest.TestCase):
     def setUp(self):
         # Change to AQM directory
-        print("Beginning Test")
         os.chdir(os.path.join(os.path.dirname(os.getcwd()), "AQM"))
 
         app.config['TESTING'] = True
@@ -47,14 +46,16 @@ class FlaskTestCase(unittest.TestCase):
                              data={'nodeName': node_name, 'nodeLocation': node_location, 'nodeAdd': 'Add Node'},
                              follow_redirects=True)
 
+    def get_node_id(self, node_name):
+        # Function to return the node_id in relation to the nodes name.
+        return dbm.get_node_id_by_name(node_name)
+
+    def get_node_token(self, node_name):
+        return dbm.get_node_token_by_name(node_name)
+
     # Static functions
     @staticmethod
     def register_admin(username='admin', email='admin@admin.com',
                        password='$2b$12$yZNLO93MQ9E1bkCdkowVLe3C/0SieARNigJFZ/0d85buWJ.M5om6m'):
         # Function to create an admin account via database insertion
         dbm.insert_user(username=username, password=password, email=email, user_type=0)
-
-    @staticmethod
-    def get_node_id(node_name):
-        # Function to return the node_id in relation to the nodes name.
-        dbm.get_node_id_by_name(node_name)

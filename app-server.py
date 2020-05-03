@@ -3,6 +3,8 @@ import types
 import socket
 import pickle
 import datetime
+import argparse
+import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import dbm
@@ -141,11 +143,26 @@ def send_alert(alert, node_data, dt):
 
 
 if __name__ == '__main__':
-    # Determine if database needs setup
-    dbm.db_exists()
+    parser = argparse.ArgumentParser(description='Monitoring Server')
+    parser.add_argument('-ip', '--ip', help='IP to receive connections', required=True)
+    parser.add_argument('-tm', '--test_mode', help='Testing mode',
+                        action='store_true')
+    args = parser.parse_args()
 
-    #host = '127.0.0.1'
-    host = '169.254.58.5'
+    if args.ip is not None:
+        ip = args.ip
+    if args.test_mode is not None:
+        test_mode = args.test_mode
+
+    # Determine if database needs setup
+    if test_mode:
+        dbm.db_path =  os.path.join(os.path.dirname(__file__), 'test_database.sqlite3')
+        dbm.db_exists(test_mode)
+
+    dbm.db_exists()
+    host = ip
+    # host = '127.0.0.1'
+    # host = '169.254.58.5'
     port = 12345
     BUFFER_SIZE = 1024
 
@@ -153,7 +170,7 @@ if __name__ == '__main__':
     socket_tcp.setblocking(False)  # Configure socket non-blocking
     socket_tcp.bind((host, port))
     socket_tcp.listen()
-    print('Opened socket for listening connections on {} {}'.format(host, port))
+    print('Opened socket on {} {}'.format(host, port))
     socket_tcp.setblocking(False)
     # We register the socket to be monitored by the selector functions
     selector.register(socket_tcp, selectors.EVENT_READ, data=None)
@@ -166,4 +183,4 @@ if __name__ == '__main__':
                 (service_connection(key, mask))
 
     socket_tcp.close()
-    print('Connection finished.')
+    print('Connection ended.')

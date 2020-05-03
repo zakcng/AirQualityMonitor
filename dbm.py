@@ -15,7 +15,7 @@ db_con = None
 cursor = None
 
 
-def db_exists():
+def db_exists(test_mode=False):
     global db_con
     global cursor
 
@@ -178,13 +178,25 @@ def change_user_unit_preference(user_id, unit_preference):
     db_con.commit()
 
 
-def node_exists(node_id):
+def node_exists_by_id(node_id):
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute("SELECT * FROM nodes WHERE node_id=?", (node_id,))
-    token = cust_cursor.fetchone()
+    node = cust_cursor.fetchone()
 
-    if token:
+    if node:
+        return True
+    else:
+        return False
+
+
+def node_exists_by_name(node_name):
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT * FROM nodes WHERE name=?", (node_name,))
+    node = cust_cursor.fetchone()
+
+    if node:
         return True
     else:
         return False

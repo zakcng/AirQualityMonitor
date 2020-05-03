@@ -16,7 +16,7 @@ def get_sds011():
 
 def get_temp():
     if emulate:
-        #temp = (random.randint(20, 23))
+        # temp = (random.randint(20, 23))
         temp = 23
         return temp
     else:
@@ -92,13 +92,39 @@ def service_connection(key, mask):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Monitoring Client')
+    parser.add_argument('-ip', '--ip', help='IP to request connection', required=True)
     parser.add_argument('-t', '--token', help='Unique connection token', required=True)
+    parser.add_argument('-tm', '--test_mode', help='Test Mode',
+                        action='store_true')
     parser.add_argument('-e', '--emulate', help='Emulate sensors',
                         action='store_true')
+
+    # For test mode
+    parser.add_argument('-temp', '--temp', help='Temperature')
+    parser.add_argument('-humidity', '--humidity', help='Humidity')
+    parser.add_argument('-bp', '--bp', help='Barometric Pressure')
+    parser.add_argument('-pm25', '--pm25', help='PM2.5')
+    parser.add_argument('-pm10', '--pm10', help='PM10')
     args = parser.parse_args()
 
+    if args.ip is not None:
+        host = args.ip
     if args.token is not None:
         token = args.token
+    # Test mode values
+    if args.test_mode is not None:
+        test_mode = args.test_mode
+        if args.temp is not None:
+            test_temp = args.temp
+        if args.humidity is not None:
+            test_humidity = args.humidity
+        if args.bp is not None:
+            test_bp = args.bp
+        if args.pm25 is not None:
+            test_pm25 = args.pm25
+        if args.pm10 is not None:
+            test_pm10 = args.pm10
+
     if args.emulate is not None:
         emulate = args.emulate
 
@@ -106,8 +132,8 @@ if __name__ == '__main__':
     print("Emulate: " + str(emulate))
 
     # Arguments
-    #host = '127.0.0.1'
-    host = '169.254.58.5'
+    # host = '127.0.0.1'
+    # host = '169.254.58.5'
     port = 12345
     BUFFER_SIZE = 1024
     TICK_RATE = 60
@@ -125,7 +151,11 @@ if __name__ == '__main__':
 
     start_time = time.time()
     while True:
-        node_data = package_data(token)
+        if test_mode:
+            node_data = [token, test_temp, test_humidity, test_bp, test_pm25, test_pm10]
+        else:
+            node_data = package_data(token)
+
         print(node_data)
         send_data(host, port)
         time.sleep(TICK_RATE - ((time.time() - start_time) % TICK_RATE))
