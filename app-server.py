@@ -156,10 +156,13 @@ if __name__ == '__main__':
 
     # Determine if database needs setup
     if test_mode:
-        dbm.db_path =  os.path.join(os.path.dirname(__file__), 'test_database.sqlite3')
-        dbm.db_exists(test_mode)
+        dbm.db_path = os.path.join(os.path.dirname(__file__), 'test_database.sqlite3')
+        dbm.db_exists()
+    else:
+        dbm.db_path = os.path.join(os.path.dirname(__file__), 'database.sqlite3')
 
     dbm.db_exists()
+
     host = ip
     # host = '127.0.0.1'
     # host = '169.254.58.5'

@@ -15,7 +15,7 @@ db_con = None
 cursor = None
 
 
-def db_exists(test_mode=False):
+def db_exists():
     global db_con
     global cursor
 
