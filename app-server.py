@@ -33,8 +33,11 @@ def service_connection(key, mask):
             node_data = pickle.loads(recv_data)
             # Time received
             dt = datetime.datetime.now().isoformat()
-            dbm.insert_quality_record(node_data, dt)
-            detect_alert_requirement(node_data, dt)
+            print(node_data)
+            if dbm.insert_quality_record(node_data, dt):
+                detect_alert_requirement(node_data, dt)
+            else:
+                print("Failed to save client data!")
         else:
             print('Closing connection: {}'.format(data.addr))
             selector.unregister(sock)
@@ -143,6 +146,7 @@ def send_alert(alert, node_data, dt):
 
 
 if __name__ == '__main__':
+    print(os.getcwd())
     parser = argparse.ArgumentParser(description='Monitoring Server')
     parser.add_argument('-ip', '--ip', help='IP to receive connections', required=True)
     parser.add_argument('-tm', '--test_mode', help='Testing mode',
@@ -156,10 +160,10 @@ if __name__ == '__main__':
 
     # Determine if database needs setup
     if test_mode:
-        dbm.db_path = os.path.join(os.path.dirname(__file__), 'test_database.sqlite3')
+        dbm.db_path = os.path.join(os.path.join(os.path.dirname(__file__), 'AQM'), 'test_database.sqlite3')
         dbm.db_exists()
     else:
-        dbm.db_path = os.path.join(os.path.dirname(__file__), 'database.sqlite3')
+        dbm.db_path = os.path.join(os.path.join(os.path.dirname(__file__), 'AQM'), 'database.sqlite3')
 
     dbm.db_exists()
 

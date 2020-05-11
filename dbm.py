@@ -120,11 +120,16 @@ def insert_quality_record(node_data, dt):
     token = str(node_data[0])
     node_id = get_node_id_by_token(token)
 
-    cursor.execute('''INSERT INTO quality_records(id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
-                      VALUES(null,?,?,?,?,?,?,?)''',
-                   (node_id, dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
+    if node_id:
+        cursor.execute('''INSERT INTO quality_records(id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
+                          VALUES(null,?,?,?,?,?,?,?)''',
+                       (node_id, dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
 
-    db_con.commit()
+        db_con.commit()
+
+        return True
+    else:
+        return False
 
 
 def insert_node(nodeName, nodeLocation, nodeToken):
@@ -277,10 +282,14 @@ def get_usernames():
 def get_node_id_by_token(token):
     # Calculate node id from token
     find_node_sql = cursor.execute("SELECT * FROM nodes WHERE token=?", (token,)).fetchone()
-    node_id = find_node_sql[0]
 
-    if node_id:
-        return node_id
+    if find_node_sql:
+        node_id = find_node_sql[0]
+
+        if node_id:
+            return node_id
+        else:
+            return None
     else:
         return None
 

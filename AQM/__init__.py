@@ -622,4 +622,5 @@ def get_pagination(**kwargs):
 app.jinja_env.globals.update(convert_temp_f=convert_temp_f)
 
 if __name__ == '__main__':
+    os.getcwd()
     app.run(debug=True)

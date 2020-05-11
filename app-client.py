@@ -5,6 +5,7 @@ import time
 import random
 import pickle
 import argparse
+import os
 
 selector = selectors.DefaultSelector()
 
@@ -16,8 +17,8 @@ def get_sds011():
 
 def get_temp():
     if emulate:
-        # temp = (random.randint(20, 23))
-        temp = 23
+        temp = (round(random.uniform(22, 23), 2))
+        #temp = 23
         return temp
     else:
         temp = round(sense.get_temperature(), 2)
@@ -91,6 +92,7 @@ def service_connection(key, mask):
 
 
 if __name__ == '__main__':
+    os.getcwd()
     parser = argparse.ArgumentParser(description='Monitoring Client')
     parser.add_argument('-ip', '--ip', help='IP to request connection', required=True)
     parser.add_argument('-t', '--token', help='Unique connection token', required=True)
