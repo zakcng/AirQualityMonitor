@@ -35,7 +35,7 @@ def db_exists():
 def db_setup():
     quality_records_sql = '''
     CREATE TABLE quality_records (
-        id INTEGER PRIMARY KEY, 
+        record_id INTEGER PRIMARY KEY, 
         node_id INTEGER NOT NULL,
         time TEXT NOT NULL,
         temp REAL NOT NULL,
@@ -121,7 +121,7 @@ def insert_quality_record(node_data, dt):
     node_id = get_node_id_by_token(token)
 
     if node_id:
-        cursor.execute('''INSERT INTO quality_records(id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
+        cursor.execute('''INSERT INTO quality_records(record_id, node_id, time, temp, humidity, barometric_pressure, pm_25, pm_10)
                           VALUES(null,?,?,?,?,?,?,?)''',
                        (node_id, dt, node_data[1], node_data[2], node_data[3], node_data[4], node_data[5]))
 
@@ -464,7 +464,7 @@ def return_all_quality_records_by_node_id(node_id):
     db_con.row_factory = sqlite3.Row
     cust_cursor = db_con.cursor()
     cust_cursor.execute(
-        "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id=? ORDER BY time DESC",
+        "SELECT record_id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id=? ORDER BY time DESC",
         (node_id,))
     record = cust_cursor.fetchall()
 

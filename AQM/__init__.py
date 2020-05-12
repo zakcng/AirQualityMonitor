@@ -76,8 +76,8 @@ def index():
     per_page = 5
     offset = (page - 1) * per_page
 
-    sql = 'select id, name, time, temp, humidity, barometric_pressure, pm_25, pm_10 from quality_records INNER JOIN ' \
-          'nodes ON quality_records.node_id=nodes.node_id order by id desc  limit {}, {}' \
+    sql = 'select record_id, name, time, temp, humidity, barometric_pressure, pm_25, pm_10 from quality_records INNER JOIN ' \
+          'nodes ON quality_records.node_id=nodes.node_id order by record_id desc  limit {}, {}' \
         .format(offset, per_page)
     g.cur.execute(sql)
     rows = g.cur.fetchall()
@@ -147,7 +147,7 @@ def node(node_id):
         page, per_page, offset = get_page_args(page_parameter='page',
                                                per_page_parameter='per_page')
 
-        sql = "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC limit {}, {}".format(
+        sql = "SELECT record_id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC limit {}, {}".format(
             node_id, offset, per_page)
         g.cur.execute(sql)
         rows = g.cur.fetchall()
@@ -217,7 +217,7 @@ def plot(dynamic=True):
         rows = [dict(row) for row in rows]
 
         df = pd.DataFrame(rows)
-        del df['id']  # Remove redundant record id
+        del df['record_id']  # Remove redundant record id
 
         fig = go.Figure()
 
@@ -239,7 +239,7 @@ def plot(dynamic=True):
 
         return graph_json
 
-    sql = "SELECT id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC".format(
+    sql = "SELECT record_id, time, temp, humidity, barometric_pressure, pm_25, pm_10 FROM 'quality_records' WHERE node_id={} ORDER BY time DESC".format(
         1)
     g.cur.execute(sql)
     rows = g.cur.fetchall()
