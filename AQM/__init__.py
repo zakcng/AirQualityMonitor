@@ -347,12 +347,16 @@ def register():
         return redirect(url_for('index'))
     if request.method == "POST":
         if form.validate_on_submit():
-            hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            dbm.insert_user(form.username.data, hashed_pass, form.email.data)
+            user_exists = dbm.return_user_by_username(form.username.data)
+            if user_exists:
+                flash(f'• Username has already been registered!', 'danger')
+            else:
+                hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+                dbm.insert_user(form.username.data, hashed_pass, form.email.data)
 
-            flash(f'• Welcome {form.username.data}, your account has been registered successfully!', 'success')
+                flash(f'• Welcome {form.username.data}, your account has been registered successfully!', 'success')
 
-            return redirect(url_for('login'))
+                return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
 
@@ -361,11 +365,10 @@ def register():
 def account():
     alerts = dbm.get_alerts_by_user_id(current_user.get_id())
 
-    # Workaround for SQLite row not allowing assignment
+    # Workaround for SQLite row object not allowing assignment
     dict_rows = [dict(row) for row in alerts]
 
     # Convert back to human readable
-
     def get_alert_current_value(node_id, selector):
         return dbm.get_latest_value_node(node_id, selector)
 
