@@ -22,7 +22,7 @@ class TestNodeData(FlaskTestCase):
         assert f'Removed user test successfully'.encode() in response.data
 
     def test_node_removal(self):
-        # TODO: Ensure node data is also removed. 
+        # TODO: Ensure node data is also removed.
         self.register_admin()
         self.login('admin', 'admin')
 
