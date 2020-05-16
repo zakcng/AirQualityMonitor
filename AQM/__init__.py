@@ -499,7 +499,7 @@ def admin_cp():
         return redirect(url_for('index'))
 
 
-@app.route("/node_management", methods=['GET', 'POST'])
+@app.route("/node-management", methods=['GET', 'POST'])
 @login_required
 def node_management():
     if current_user.is_authenticated and current_user.get_user_type() == 0:

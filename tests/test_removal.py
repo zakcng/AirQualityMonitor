@@ -22,7 +22,6 @@ class TestNodeData(FlaskTestCase):
         assert f'Removed user test successfully'.encode() in response.data
 
     def test_node_removal(self):
-        # TODO: Ensure node data is also removed.
         self.register_admin()
         self.login('admin', 'admin')
 
@@ -58,3 +57,9 @@ class TestNodeData(FlaskTestCase):
         response = self.app.get('/', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'<td>69.0</td>', response.data)
+
+        response = self.app.post('/node-management',
+                                 data={'node_name': node_name},
+                                 follow_redirects=True)
+
+        self.assertNotIn(b'<td>69.0</td>', response.data)

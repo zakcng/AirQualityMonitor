@@ -66,3 +66,14 @@ class TestStatusCodes(FlaskTestCase):
         """
         response = self.app.get('/account', follow_redirects=True)
         self.assertEqual(response.status_code, 401)
+
+    def test_account_management_status_code_positive(self):
+        response = self.register('test', 'test@test.com', 'test', 'test')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.login("test", "test")
+        self.assertEqual(response.status_code, 200)
+
+        # Check it fails redirect to index (/)
+        response = self.app.get('/account', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)

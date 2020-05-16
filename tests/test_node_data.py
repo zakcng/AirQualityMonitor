@@ -27,7 +27,6 @@ class TestNodeData(FlaskTestCase):
 
         time.sleep(5)
 
-
         client_path = (os.path.join(os.path.dirname(os.getcwd()), "app-client.py"))
         client_process = subprocess.Popen(["python", client_path, "-ip", "127.0.0.1", "-e", "-tm", "-t" ,node_token, "-temp", "69", "-humidity", "50", "-bp", "1000", "-pm25", "5", "-pm10", "10"])
 

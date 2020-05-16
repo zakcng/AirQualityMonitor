@@ -17,8 +17,8 @@ def get_sds011():
 
 def get_temp():
     if emulate:
-        temp = (round(random.uniform(22, 23), 2))
-        #temp = 21
+        #temp = (round(random.uniform(22, 23), 2))
+        temp = 21
         return temp
     else:
         temp = round(sense.get_temperature(), 2)
