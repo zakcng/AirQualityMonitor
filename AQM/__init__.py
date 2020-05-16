@@ -400,23 +400,33 @@ def account():
         if alert['measurement'] == 0:
             alert['measurement'] = 'Temperature'
             alert['latest_value'] = get_alert_current_value(alert['node_id'], 'temp')
-            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
+
+            if alert['latest_value']:
+                alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 1:
             alert['measurement'] = 'Humidity'
             alert['latest_value'] = get_alert_current_value(alert['node_id'], 'humidity')
-            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
+
+            if alert['latest_value']:
+                alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 2:
             alert['measurement'] = 'Barometric Pressure'
             alert['latest_value'] = get_alert_current_value(alert['node_id'], 'barometric_pressure')
-            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
+
+            if alert['latest_value']:
+                alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 3:
             alert['measurement'] = 'PM2.5'
             alert['latest_value'] = get_alert_current_value(alert['node_id'], 'pm_25')
-            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
+
+            if alert['latest_value']:
+                alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
         elif alert['measurement'] == 4:
             alert['measurement'] = 'PM10'
             alert['latest_value'] = get_alert_current_value(alert['node_id'], 'pm10')
-            alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
+
+            if alert['latest_value']:
+                alert['colour'] = get_alert_colour_cell(alert['value'], alert['state'], alert['latest_value'])
 
     if request.method == "POST":
         if request.form.get('remove_alert'):

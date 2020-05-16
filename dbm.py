@@ -240,18 +240,25 @@ def get_node_token_by_name(node_name):
 
 def remove_node_by_name(node_name):
     # Removes a node identified by node name
-    cursor.execute("DELETE FROM nodes where name=?", (node_name,))
+    id = get_node_id_by_name(node_name)
 
-    # TODO: Remove quality_records as required once implemented.
+    cursor.execute("DELETE FROM nodes where name=?", (node_name,))
+    cursor.execute("DELETE FROM quality_records where node_id=?", (id,))
+    cursor.execute("DELETE FROM alerts where node_id=?", (id,))
 
     db_con.commit()
 
 
 def remove_user_by_name(username):
     # Removes a node identified by node name
-    cursor.execute("DELETE FROM accounts where username=?", (username,))
+    db_con.row_factory = sqlite3.Row
+    cust_cursor = db_con.cursor()
+    cust_cursor.execute("SELECT account_id FROM accounts WHERE username=?", (username,))
 
-    # TODO: Remove threshold alert attached to account
+    user_id = cust_cursor.fetchone()[0]
+
+    cursor.execute("DELETE FROM accounts where username=?", (username,))
+    cursor.execute("DELETE FROM alerts where account_id=?", (user_id,))
 
     db_con.commit()
 
@@ -344,10 +351,12 @@ def get_latest_value_node(node_id, selector):
     cust_cursor.execute(
         "SELECT {}, time FROM 'quality_records' where node_id=? ORDER BY time desc".format(selector),
         (node_id,))
-    value = cust_cursor.fetchone()[0]
+    value = cust_cursor.fetchone()
 
-    return value
-
+    if value:
+        return value[0]
+    else:
+        return None
 
 def get_alerts_by_user_id(user_id):
     # Return alerts given a users id
