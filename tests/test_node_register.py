@@ -9,7 +9,7 @@ def create_node(self, node_name, node_location):
 
 
 class TestNodeRegister(FlaskTestCase):
-    def test_create_node(self):
+    def test_positive_node_register(self):
         self.register_admin()
         self.login('admin', 'admin')
 
@@ -21,7 +21,7 @@ class TestNodeRegister(FlaskTestCase):
         response = create_node(self, node_name, node_location)
         assert f'Node {node_name} created'.encode() in response.data
 
-    def test_create_duplicate_node(self):
+    def test_negative_node_register_duplicate_name(self):
         self.register_admin()
         self.login('admin', 'admin')
 
