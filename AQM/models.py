@@ -1,7 +1,6 @@
 from AQM import login_manager, app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-import dbm
 
 
 class User(UserMixin):
